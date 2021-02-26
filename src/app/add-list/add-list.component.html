@@ -1,0 +1,46 @@
+<ion-grid fixed class="ion-no-padding">
+    <ion-row >
+        <ion-col class="ion-margin-top" size="12" style="display: flex;justify-content: space-between; padding: 0px 10px;">
+            <button (click)="saveList()" class="button" style="margin: 0px;">Guargar lista.</button>
+            <button (click)="searchProduct()" class="button" style="margin: 0px;">Agregar producto(s)</button>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12">
+            <h5>Fecha de creación: {{dateCreationList}}</h5>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12">
+            <ion-item lines = none>
+                <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+                <ion-input [(ngModel)]="nameList" required type="text"></ion-input>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="12">
+            <h4>Productos Agregados  <button (click)="viewProducts()" *ngIf="products?.length>0" class="button">Ver todos</button></h4>
+        </ion-col>
+    </ion-row>
+    <ion-row *ngIf="products?.length>0;else emptyProd">
+        <ion-col size="12" *ngFor="let prod of products; let i = index" [attr.data-index]="i">
+            <ion-item style="padding: 10px 25px !important;" lines="none" *ngIf="i<=2">
+                <ion-label>
+                  <h2>{{prod.name}}</h2>
+                  <h3>$ {{prod.precio}}</h3>
+                </ion-label>
+              </ion-item>
+        </ion-col>
+    </ion-row>
+    <ng-template #emptyProd>
+        <lottie-player
+    autoplay
+    loop
+    mode="normal"
+    src="../../assets/animations/empty1.json"
+    style="height: 50%; display: flex; align-items: center;"
+>
+</lottie-player>
+    </ng-template>
+</ion-grid>

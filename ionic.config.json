@@ -1,5 +1,7 @@
 {
   "name": "listapp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

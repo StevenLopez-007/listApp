@@ -1,17 +1,32 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar class="toolbarColor2">
+    <ion-title class="ion-text-center">Agregar</ion-title>
+  </ion-toolbar>
+  <ion-toolbar class="toolbarColor2">
+    <ion-segment [(ngModel)]="segment" (ionChange)="segmentChange($event)">
+      <ion-segment-button value="0">
+        <ion-label>Categoría</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="1">
+        <ion-label>Producto(s)</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="2">
+        <ion-label>Lista</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-slides #slides (ionSlideDidChange)="slideChange(slides)" (ionSlidesDidLoad)="slideChange(slides)" pager="false" [options]="slidesOptions">
+    <ion-slide>
+     <app-add-category></app-add-category>
+    </ion-slide>
+    <ion-slide>
+     <app-add-product></app-add-product>
+    </ion-slide>
+    <ion-slide>
+      <app-add-list></app-add-list>
+    </ion-slide>
+  </ion-slides>
 </ion-content>

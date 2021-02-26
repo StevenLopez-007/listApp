@@ -1,0 +1,22 @@
+.button{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 10px auto;
+    background-color: rgba(3,126,255,1);
+}
+
+.button ion-icon{
+    font-size: 38px;
+    display: initial;
+}
+
+ion-item{
+    --background:#041266;
+    --border-radius:15px;
+    padding: 25px;
+}

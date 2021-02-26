@@ -1,0 +1,38 @@
+<form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+  <ion-refresher #refresher style="z-index:1000;" slot="fixed" (ionRefresh)="getCategories($event)" pullFactor="0.8" pullMin="60" pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-grid fixed class="ion-no-padding">
+    <ion-row class="ion-no-padding">
+      <ion-col size="12" class="ion-no-padding">
+          <ion-item lines="none" (click)="selectCat()">
+            <ion-label>Categoría</ion-label>
+            <ion-note style="align-self: center; font-size: 14px;">{{categoryEmpty?'Selecione la categoría':category.nameCat}}<ion-icon name="caret-down"></ion-icon></ion-note>
+          </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item lines="none">
+          <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input required formControlName="name" type="text"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item lines="none">
+          <ion-label position="floating">Precio <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input inputmode="numeric" required formControlName="precio" type="number"></ion-input>
+        </ion-item>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-item lines="none" (click)="viewProducts()">
+          <ion-label>Ver productos</ion-label>
+          <ion-badge slot="end" color="primary">{{products.length}}</ion-badge>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="buttons">
+    <button  type="submit" class="button">Guardar producto(s)</button>
+    <button (click)="addProduct()" type="button" class="button">Agregar producto</button>
+  </div>
+</form>

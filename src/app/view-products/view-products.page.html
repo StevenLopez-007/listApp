@@ -1,0 +1,51 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="toolbarColor2">
+    <ion-title>Productos</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="toolbarColor2">
+    <ion-searchbar [(ngModel)]="search" style="--border-radius:15px;" placeholder="Buscar..." type="text"></ion-searchbar>
+    <ion-icon *ngIf="showOptionsFilter" (click)="openFilters()" style="color:var(--ion-color-tertiary-contrast);font-size: 22px; margin:8px;" slot="end" name="options">
+    </ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-top">
+  <ion-select style="display: none;" [(ngModel)]="searchBy" okText="Aceptar" cancel-text="Cancelar" #selectFilter
+    [interfaceOptions]="optionsSelectAlert">
+    <ion-select-option *ngFor="let cat of cats" [value]="cat">{{cat}}</ion-select-option>
+    <ion-select-option  value="">Mostrar todas.</ion-select-option>
+  </ion-select>
+  <ion-grid fixed *ngIf="products?.length>0;else emptyProducts">
+    <ion-row>
+      <ion-col size="12" *ngFor="let product of products | filterProducts:search:searchBy:showOptionsFilter; let i = index" [attr.data-index]="i">
+        <ion-item [id]="'item'+i" lines="none">
+          <ion-label>
+            <h2>{{product.name}}</h2>
+            <h3>$ {{product.precio}}</h3>
+          </ion-label>
+          <ion-buttons slot="end">
+            <ion-button (click)="deleteProduct(i)">
+              <ion-icon name="trash" slot="start"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ng-template #emptyProducts>
+    <lottie-player
+    autoplay
+    loop
+    mode="normal"
+    src="../../assets/animations/empty1.json"
+    style="width: 100%; height: 95%;"
+>
+</lottie-player>
+  </ng-template>
+</ion-content>

@@ -1,0 +1,54 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="toolbarColor2">
+    <ion-title>{{name.length>0?'Buscando producto...':'Buscar producto(s)'}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="toolbarColor2">
+    <ion-searchbar (keyup.enter)="searchProduct()" [(ngModel)]="name" style="--border-radius:15px;" placeholder="Buscar..." type="text"></ion-searchbar>
+    <ion-icon (click)="searchProduct()" name="search-outline" slot="end" style="color:var(--ion-color-tertiary-contrast);font-size: 22px; margin:8px;"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+<ion-grid *ngIf="name.length>0" fixed class="ion-no-padding">
+  <ion-row>
+    <h4 class="ion-margin">Se muestran los productos encontrados y los no agregados.</h4>
+    <ion-col size="12" *ngFor="let product of productsFound | filterFoundProducts: products: productsAggregates;let i = index" [attr.data-index]="i">
+      <ion-item (click)="addProduct(product)" lines="none" class="ion-margin">
+        <ion-label>
+          <h2>{{product.name}}</h2>
+          <h3>$ {{product.precio}}</h3>
+        </ion-label>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-grid *ngIf="name.length<=0" fixed class="ion-no-padding">
+  <ion-row>
+    <h4 class="ion-margin">Productos por agregar:</h4>
+    <ion-col size="12" *ngFor="let product of products;let i = index" [attr.data-index]="i">
+      <ion-item [id]="'item'+i" lines="none" class="ion-margin">
+        <ion-label>
+          <h2>{{product.name}}</h2>
+          <h3>$ {{product.precio}}</h3>
+        </ion-label>
+        <ion-buttons slot="end">
+          <ion-button (click)="deleteProduct(i)">
+            <ion-icon name="trash" slot="start"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>

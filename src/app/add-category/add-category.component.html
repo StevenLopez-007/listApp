@@ -1,0 +1,8 @@
+<form [formGroup]="categoryForm" (ngSubmit)="saveCat()">
+  <ion-item lines="none">
+    <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+    <ion-input required formControlName="nameCat" type="text"></ion-input>
+  </ion-item>
+
+  <button  type="submit" class="button"><ion-icon name="add"></ion-icon></button>
+</form>

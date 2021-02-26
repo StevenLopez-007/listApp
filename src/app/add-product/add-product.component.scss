@@ -1,0 +1,38 @@
+ion-item{
+    --background:#041266;
+    --border-radius:15px;
+    padding: 25px;
+}
+
+form{
+    height: 100%;
+    display: grid;
+}
+
+.button{
+    height: 40px;
+    // width: 50px;
+    border-radius: 25px;
+    background-color: rgba(3,126,255,1);
+    color:white;
+    font-family: NRegular;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.buttons{
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // right: 0;
+    align-self: end;
+    width: 100%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+.button ion-icon{
+    font-size: 38px;
+    display: initial;
+}

@@ -1,0 +1,22 @@
+ion-slides{
+    height: 100%;
+    overflow: auto;
+}
+
+ion-segment-button{
+    --color-checked:var(--ion-color-danger)
+}
+
+app-add-category{
+    height: 100%;
+    width: 100%;
+}
+app-add-product{
+    height: 100%;
+    width: 100%;
+}
+
+app-add-list{
+    height: 100%;
+    width: 100%;
+}

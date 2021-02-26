@@ -1,1 +1,14 @@
+.tab-selected ion-icon{
+    transform: translateY(-5px)
+}
+ion-icon{
+    transition: 0.25s all;
+}
 
+.bar{
+    height: 5px;
+    background-color: var(--ion-background-color);
+    border-radius: 10px;
+    align-self: end;
+    transition: 0.25s;
+}
