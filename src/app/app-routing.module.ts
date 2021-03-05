@@ -17,6 +17,10 @@ const routes: Routes = [
   {
     path: 'search-product',
     loadChildren: () => import('./search-product/search-product.module').then( m => m.SearchProductPageModule)
+  },
+  {
+    path: 'view-detail-list/:idList',
+    loadChildren: () => import('./view-detail-list/view-detail-list.module').then( m => m.ViewDetailListPageModule)
   }
 ];
 @NgModule({

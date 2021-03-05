@@ -7,15 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { ViewProductsPageRoutingModule } from './view-products-routing.module';
 
 import { ViewProductsPage } from './view-products.page';
-import { FilterProductsPipe } from '../pipes/filter-products.pipe';
+import { AnimateItemsDirective } from '../directives/animate-items.directive';
+import { PipesModule } from '../pipes/PipesModule.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ViewProductsPageRoutingModule
+    ViewProductsPageRoutingModule,
+    PipesModule
   ],
-  declarations: [ViewProductsPage,FilterProductsPipe]
+  declarations: [ViewProductsPage,AnimateItemsDirective]
 })
 export class ViewProductsPageModule {}

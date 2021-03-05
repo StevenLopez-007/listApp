@@ -1,0 +1,76 @@
+<ion-header [class]="multiDelete?'':'ion-no-border'">
+  <ion-toolbar class="toolbarColor2">
+    <ion-title class="ion-text-center">{{multiDelete?'Seleccionado(s): '+ (productsToDelete?.length):'Detalle de la lista'}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="multiDelete?closeMultiDelete():close()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons *ngIf="multiDelete" slot="end">
+      <ion-button (click)="deleteAll?cleanDeleteAll():addAllToDelete()">
+        <ion-icon slot="start" [name]="deleteAll?'checkmark-done-outline':'checkmark-outline'"></ion-icon>
+      </ion-button>
+      <ion-button [disabled]="productsToDelete?.length==0" (click)="deleteProducts()">
+        <ion-icon slot="start" name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="toolbarColor2 ion-padding">
+    <div style="position: relative;">
+      <input [(ngModel)]="search" id="search" type="text">
+      <div id="icon">
+        <ion-icon style="font-size: 20px;" name="search"></ion-icon>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid fixed>
+    <div class="infoList">
+      <ion-row>
+        <ion-col size="12">
+          <ion-item lines="none">
+            <ion-label>
+              <h4 style="font-size: 14px;">Nombre:</h4>
+              <h3 style="font-size: 18px;">{{dataList.nameList}}</h3>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item lines="none">
+            <ion-label>
+              <h4 style="font-size: 14px;">Fecha de creación:</h4>
+              <h3 style="font-size: 18px;">{{dataList.date | date :'MMM d, yyy'}}</h3>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item lines="none">
+            <ion-label>
+              <h4 style="font-size: 14px;">Total:</h4>
+              <h3 style="font-size: 14px;">{{(detailList | sumPrice).toFixed(2)}}</h3>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
+  <ion-grid fixed class="products">
+    <ion-row>
+      <ion-col size="12">
+        <ion-list lines="none" appAnimateItems className="exit-enter-styles">
+          <ion-item appLongPress (longPressed)="configGesturePressStart($event)" *ngFor="let detail of detailList | filterProducts:search:'':false;let i = index" [attr.data-index]="i">
+            <ion-label>
+              <h2>{{detail.name}}</h2>
+              <h3>$ {{detail.precio}}</h3>
+            </ion-label>
+            <ion-checkbox [checked]="deleteAll" (click)="addToDelete(detail.id_detail_list)" [@checkItemsDelete] *ngIf="multiDelete" slot="end"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -8,6 +8,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ComponentsUtilsService } from './components-utils.service';
 import { Product } from '../model/product';
 import { DetailList } from '../model/detailList';
+import { List } from '../model/list';
+import { type } from 'os';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,6 +22,7 @@ export class DatabaseService {
   productsSearchList = new BehaviorSubject([]);
 
   listDetailList = new BehaviorSubject([]);
+  lists = new BehaviorSubject([]);
   constructor(private platform: Platform,
     private sqlite: SQLite,
     private httpClient: HttpClient,
@@ -44,6 +48,7 @@ export class DatabaseService {
   }
 
   private createTable() {
+    // this.sqlite.deleteDatabase({name:'list_db.db',location:'default'}).then(()=>{})
     this.httpClient.get('assets/seed.sql', { responseType: 'text' })
       .subscribe(data => {
         this.sqlPorter.importSqlToDb(this.storage, data)
@@ -145,7 +150,7 @@ export class DatabaseService {
 
   addList(name: string, date: string, products: Array<Product[]>) {
     var error = false;
-    this.storage.executeSql('INSERT INTO list (nameList,date) VALUES (?,?)', [name.trim(), date.trim()])
+    return this.storage.executeSql('INSERT INTO list (nameList,date) VALUES (?,?)', [name.trim(), date.trim()])
       .then((res) => {
         const idList = res.insertId;
         products.forEach(async (prod, index, array) => {
@@ -172,18 +177,42 @@ export class DatabaseService {
       })
   }
 
-  loadLists() {
-    return this.storage.executeSql('SELECT l.id_list,l.nameList,l.date,dl.id_detail_list,dl.products_id from list l INNER JOIN detail_list dl ON l.id_list = dl.list_id', [])
+  loadLists(){
+    return this.storage.executeSql('SELECT * FROM list',[])
+    .then((res)=>{
+      let items: List[] = [];
+      if(res.rows.length>0){
+        for (let index = 0; index < res.rows.length; index++) {
+          items.push({
+            id_list:res.rows.item(index).id_list,
+            nameList:res.rows.item(index).nameList,
+            date:res.rows.item(index).date
+          });
+        }
+      }
+      this.lists.next(items);
+    })
+  }
+
+  getLists(){
+    return this.lists.asObservable();
+  }
+
+  // DetailList methods
+  loadDetailLists(idList:string) {
+    return this.storage.executeSql('SELECT l.id_list,dl.id_detail_list,dl.products_id,l.nameList,l.date,prod.name, prod.precio from list l INNER JOIN detail_list dl ON l.id_list = dl.list_id INNER JOIN products prod on dl.products_id = prod.id_product WHERE l.id_List = ?', [idList])
       .then((res) => {
         let items: DetailList[] = [];
         if (res.rows.length > 0) {
           for (var i = 0; i < res.rows.length; i++) {
             items.push({
               id_list: res.rows.item(i).id_list,
-              nameList: res.rows.item(i).nameList,
-              date: res.rows.item(i).date,
               id_detail_list: res.rows.item(i).id_detail_list,
               products_id: res.rows.item(i).products_id,
+              nameList:res.rows.item(i).nameList,
+              date:res.rows.item(i).date,
+              name:res.rows.item(i).name,
+              precio:res.rows.item(i).precio
             });
           }
         }
@@ -194,7 +223,29 @@ export class DatabaseService {
       })
   }
 
-  getLists(){
+  getDetailLists(){
     return this.listDetailList.asObservable();
   }
+
+  async deleteProductsFromDetailList(ids_detail_list:any[]){
+    await this.componentsUtilsService.presentLoading1();
+    var error=false;
+    await Promise.all(
+      ids_detail_list.map(async (item)=>{
+        
+          await this.storage.executeSql('DELETE FROM detail_list WHERE id_detail_list = ?',[item])
+          .catch(e=>{
+            error=true;
+          });
+        
+      })
+    );
+
+    await this.componentsUtilsService.dismissLoading1();
+    await this.componentsUtilsService.presentToast1(
+      error?'Algunos productos no pudieron ser eliminados.':
+      'Productos eliminados.'
+    )
+  }
+
 }

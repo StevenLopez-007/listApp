@@ -25,6 +25,10 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
+*:focus{
+  outline: none;
+}
 #searchbarHome div input {
   height: 60px;
   border: 1px solid var(--ion-border-color1-searchbar) !important;
@@ -46,6 +50,11 @@ ion-router-outlet .ion-page {
     opacity: 1;
     //   transform: translate3d(0, 0, 0);
   }
+}
+
+.exit-enter-styles {
+  opacity: 0;
+  transform: translate3d(20px, 0, 0);
 }
 
 .toastClass1{

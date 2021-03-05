@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Gesture, GestureController, AnimationController, Animation } from '@ionic/angular'
+import { Gesture, GestureController, AnimationController, Animation, IonRefresher } from '@ionic/angular'
 import { HostListener } from '@angular/core';
 import {DatabaseService} from '../../services/database-service'
 import { ComponentsUtilsService } from '../../services/components-utils.service';
@@ -12,6 +12,7 @@ import { DetailList } from '../../model/detailList';
   providers:[SwipeList]
 })
 export class Tab1Page implements OnInit {
+  // @ViewChild('refreshList') refreshList:IonRefresher;
   contador: number = 0;
   colors = [
     {
@@ -34,20 +35,17 @@ export class Tab1Page implements OnInit {
     freeMode: true,
     loop: false
   };
-
-  listDetails:Array<DetailList[]>=[];
+  lists:Array<DetailList[]>=[];
   @ViewChild('barSwipe', { read: ElementRef }) barSwipe: ElementRef;
-  constructor(private gestureCtrl: GestureController, private animationCtrl: AnimationController,
-              private dbService:DatabaseService,private componentsUtilsService:ComponentsUtilsService,
-              private swipeList:SwipeList) { }
+  constructor(private dbService:DatabaseService,private componentsUtilsService:ComponentsUtilsService,
+              private swipeList:SwipeList) {
+                // this.lists = new Array(50).fill({nameList:'Coca-cola',date:new Date(),id_Lista:0})
+               }
 
   ngOnInit() {
     this.dbService.dbState().subscribe(async (res)=>{
       if(res){
-        await this.getDetailList();
-      }
-      else{
-        this.componentsUtilsService.presentToast1('No se ha podido conectar a la base de datos.')
+        await this.getLists();
       }
     })
   }
@@ -80,11 +78,16 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  async getDetailList(){
+  async getLists(){
     await this.dbService.loadLists();
-    this.dbService.getLists().subscribe(res=>{
-      this.listDetails = res;
-    });
+    this.dbService.getLists().subscribe(async (res)=>{
+      this.lists = res;
+      // await this.refreshList.complete();
+    })
+  }
+
+  get listEmpty(){
+    return this.lists.length<=0;
   }
 
   @HostListener('window:resize', ['$event'])

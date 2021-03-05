@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonTabs } from '@ionic/angular';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { ComponentsUtilsService } from '../../services/components-utils.service';
 
 @Component({
   selector: 'app-tabs',
@@ -14,14 +15,16 @@ export class TabsPage implements OnInit{
   widthTab:number;
   widthTabBar:number;
   dif:number;
-  
-  constructor(private keyboard:Keyboard,private screenOrientation:ScreenOrientation) {}
+  flip:boolean=false;
+  constructor(private keyboard:Keyboard,private screenOrientation:ScreenOrientation,private componentsUtilsService:ComponentsUtilsService) {}
 
   ngOnInit(){
     this.configBar();
     this.screenOrientation.onChange().subscribe(()=>{
-      this.configBar();
-      this.barAnimation();
+      setTimeout(()=>{
+        this.configBar();
+        this.barAnimation();
+      },200)
     })
   }
   

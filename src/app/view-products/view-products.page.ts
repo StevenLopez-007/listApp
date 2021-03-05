@@ -21,7 +21,8 @@ export class ViewProductsPage implements OnInit {
     leaveAnimation: this.enterAnimation1.leaveAnimation
   }
   constructor(private modalController: ModalController,
-    private enterAnimation1: EnterAnimation1) { }
+    private enterAnimation1: EnterAnimation1) { 
+    }
 
   ngOnInit() {
     this.selectCats();

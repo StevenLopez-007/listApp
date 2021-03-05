@@ -34,7 +34,6 @@ export class AddListComponent implements OnInit {
   async viewProducts(){
     try{
       await this.componentsUtilsService.presentModalViewProducts(this.products,false);
-      this.reset();
     }catch(e){
 
     }
@@ -43,6 +42,9 @@ export class AddListComponent implements OnInit {
   saveList(){
     if(this.nameList.length>0 && this.products.length>0){
       this.databaseService.addList(this.nameList,new Date().toString(),this.products)
+      .then(()=>{
+        this.reset();
+      }).catch((e)=>{});
     }
     else{
       this.componentsUtilsService.presentToast1('Cumpla con todos los requisitos.')

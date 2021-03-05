@@ -1,0 +1,54 @@
+ion-grid,ion-row,ion-col{
+    padding: 0;
+    margin: 0;
+}
+
+.infoList{
+    background-color: #041266;
+    border-bottom-right-radius: 150px;
+    padding: 15px;
+}
+
+.infoList ion-item{
+    --background: transparent;
+    // padding-left: 15px;
+}
+
+#search{
+    border: none;
+    border-radius: 50px;
+    height: 50px;
+    width: 100%;
+    padding: 15px;
+    color: black;
+    font-family: NRegular;
+}
+
+#search:focus + #icon{
+    transform: scale(0) rotate(360deg);
+}  
+
+#icon{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: #0F24A0;
+    box-shadow: 0 0 0 10px #041266;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s linear;
+}
+.products{
+    margin-top: 15px;
+}
+.products ion-item{
+    transition: 0.25s ease-in-out;
+    --background:#041266;
+    --border-radius:15px;
+    margin:20px 10px; 
+}
+

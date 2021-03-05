@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule,HammerModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -17,13 +17,13 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentsUtilsService } from '../services/components-utils.service';
 import {Keyboard} from '@ionic-native/keyboard/ngx';
-import { FilterProductsPipe } from './pipes/filter-products.pipe';
-import { FilterFoundProductsPipe } from './pipes/filter-found-products.pipe';
-import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx'
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+
 @NgModule({
-  declarations: [AppComponent, FilterProductsPipe, FilterFoundProductsPipe],
+  declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule,BrowserAnimationsModule ,IonicModule.forRoot(), AppRoutingModule,HttpClientModule],
+  imports: [BrowserModule,HammerModule,BrowserAnimationsModule ,IonicModule.forRoot(), AppRoutingModule,HttpClientModule],
+  // exports:[FilterProductsPipe,FilterFoundProductsPipe],
   providers: [
     StatusBar,
     SplashScreen,

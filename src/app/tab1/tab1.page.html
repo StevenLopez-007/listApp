@@ -1,5 +1,4 @@
 <ion-content [fullscreen]="true">
-
   <ion-grid fixed>
     <ion-row>
       <ion-col size="12">
@@ -44,30 +43,35 @@
   <div #tuslistas class="tuslistas">
     <div #barSwipe class="barSwipe">
       <ion-icon name="remove-sharp" style="color:black;"></ion-icon>
+      <ion-icon (click)="getLists()" *ngIf="!listEmpty" name="refresh-outline" style="transform: rotateY(180deg); color:black; font-size: 34px; position: absolute; right: 0; margin: 0 20px;" ></ion-icon>
     </div>
-    <ion-grid fixed *ngIf="listDetails?.length>0;else emptyList">
+    <ion-grid fixed *ngIf="!listEmpty;else emptyList">
       <ion-row>
         <ion-col size="12">
           <h1>Tus listas</h1>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="12" *ngFor="let list of listDetails">
-          <ion-item lines="none">
-            <ion-label>
-              <h2>{{list.nameList}}</h2>
-              <h3>{{list.date | date:'MMM d, yyy'}}</h3>
-            </ion-label>
-          </ion-item>
+        <ion-col size="12">
+          <ion-list appAnimateItems className="exit-enter-styles" lines="none" style="background-color: white;">
+            <ion-item [routerLink]="['/','view-detail-list',list.id_list]" style="margin: 15px 10px; transition: 0.25s ease-in-out;" *ngFor="let list of lists">
+              <ion-label>
+                <h2>{{list.nameList}} {{list.id_list}}</h2>
+                <h3>{{list.date | date:'MMM d, yyy'}}</h3>
+              </ion-label>
+            </ion-item>
+          </ion-list>
         </ion-col>
       </ion-row>
     </ion-grid>
 
     <ng-template #emptyList>
-      <lottie-player autoplay loop mode="normal" src="../../assets/animations/empty1.json"
-        style="width: 100%; height: 90%;">
-      </lottie-player>
-      <h3 style="color: black;position: absolute;top: 60%;right: 20%;">Agrega algunas listas.</h3>
+      <div style="width: 100%; height: 90%; position: relative; display: flex;" class="ion-justify-content-end ion-align-items-end">
+        <lottie-player autoplay loop mode="normal" src="../../assets/animations/empty2.json"
+          style="width: 90%; height: 90%;">
+        </lottie-player>
+        <!-- <h3 style="color:black;position: absolute; bottom: 0;">No hay listas guardadas.</h3> -->
+    </div>
     </ng-template>
   </div>
 

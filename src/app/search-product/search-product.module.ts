@@ -7,15 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { SearchProductPageRoutingModule } from './search-product-routing.module';
 
 import { SearchProductPage } from './search-product.page';
-import { FilterFoundProductsPipe } from '../pipes/filter-found-products.pipe';
+import { PipesModule } from '../pipes/PipesModule.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SearchProductPageRoutingModule
+    SearchProductPageRoutingModule,
+    PipesModule
   ],
-  declarations: [SearchProductPage,FilterFoundProductsPipe]
+  declarations: [SearchProductPage]
 })
 export class SearchProductPageModule {}
