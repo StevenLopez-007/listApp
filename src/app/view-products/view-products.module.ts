@@ -7,8 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { ViewProductsPageRoutingModule } from './view-products-routing.module';
 
 import { ViewProductsPage } from './view-products.page';
-import { AnimateItemsDirective } from '../directives/animate-items.directive';
 import { PipesModule } from '../pipes/PipesModule.module';
+import { DirectivesModule } from '../directives/directives.module';
 
 @NgModule({
   imports: [
@@ -16,8 +16,9 @@ import { PipesModule } from '../pipes/PipesModule.module';
     FormsModule,
     IonicModule,
     ViewProductsPageRoutingModule,
-    PipesModule
+    PipesModule,
+    DirectivesModule
   ],
-  declarations: [ViewProductsPage,AnimateItemsDirective]
+  declarations: [ViewProductsPage]
 })
 export class ViewProductsPageModule {}

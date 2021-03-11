@@ -86,8 +86,8 @@
       "cordova-plugin-ionic-keyboard": {},
       "cordova-sqlite-storage": {},
       "uk.co.workingedge.cordova.plugin.sqliteporter": {},
-      "com.outsystems.mobile.stetho": {},
-      "cordova-plugin-screen-orientation": {}
+      "cordova-plugin-screen-orientation": {},
+      "com.outsystems.mobile.stetho": {}
     },
     "platforms": [
       "android"

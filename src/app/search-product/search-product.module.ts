@@ -8,6 +8,11 @@ import { SearchProductPageRoutingModule } from './search-product-routing.module'
 
 import { SearchProductPage } from './search-product.page';
 import { PipesModule } from '../pipes/PipesModule.module';
+import { AnimateItemsDirective } from '../directives/animate-items.directive';
+import { LongPressDirective } from '../directives/long-press.directive';
+import { ShowInputDirective } from '../directives/show-input.directive';
+import { NumberInputDirective } from '../directives/number-input.directive';
+import { DirectivesModule } from '../directives/directives.module';
 
 @NgModule({
   imports: [
@@ -15,7 +20,8 @@ import { PipesModule } from '../pipes/PipesModule.module';
     FormsModule,
     IonicModule,
     SearchProductPageRoutingModule,
-    PipesModule
+    PipesModule,
+    DirectivesModule
   ],
   declarations: [SearchProductPage]
 })

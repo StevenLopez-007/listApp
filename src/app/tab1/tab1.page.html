@@ -43,7 +43,7 @@
   <div #tuslistas class="tuslistas">
     <div #barSwipe class="barSwipe">
       <ion-icon name="remove-sharp" style="color:black;"></ion-icon>
-      <ion-icon (click)="getLists()" *ngIf="!listEmpty" name="refresh-outline" style="transform: rotateY(180deg); color:black; font-size: 34px; position: absolute; right: 0; margin: 0 20px;" ></ion-icon>
+      <ion-icon (click)="getLists()" name="refresh-outline" style="transform: rotateY(180deg); color:black; font-size: 34px; position: absolute; right: 0; margin: 0 20px;" ></ion-icon>
     </div>
     <ion-grid fixed *ngIf="!listEmpty;else emptyList">
       <ion-row>
@@ -56,7 +56,7 @@
           <ion-list appAnimateItems className="exit-enter-styles" lines="none" style="background-color: white;">
             <ion-item [routerLink]="['/','view-detail-list',list.id_list]" style="margin: 15px 10px; transition: 0.25s ease-in-out;" *ngFor="let list of lists">
               <ion-label>
-                <h2>{{list.nameList}} {{list.id_list}}</h2>
+                <h2>{{list.nameList}}</h2>
                 <h3>{{list.date | date:'MMM d, yyy'}}</h3>
               </ion-label>
             </ion-item>

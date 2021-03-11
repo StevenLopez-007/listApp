@@ -7,5 +7,6 @@ export interface DetailList{
     nameList:string,
     date:string,
     name:string,
-    precio:number
+    precio:number,
+    cantidad:number
 }

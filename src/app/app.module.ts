@@ -18,6 +18,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentsUtilsService } from '../services/components-utils.service';
 import {Keyboard} from '@ionic-native/keyboard/ngx';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import { ShowInputDirective } from './directives/show-input.directive';
+import { NumberInputDirective } from './directives/number-input.directive';
 
 @NgModule({
   declarations: [AppComponent],

@@ -13,7 +13,9 @@ export class AnimateItemsDirective implements AfterViewInit{
   }
 
   ngAfterViewInit(){
-    // console.log('entro')
+    this.items.forEach((item)=>{
+      console.log(item.nativeElement)
+    })
     this.observer = new IntersectionObserver((entries)=>{
       entries.forEach((entry:any)=>{
         if(!entry.isIntersecting){

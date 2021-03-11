@@ -1,5 +1,5 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="toolbarColor2">
+<ion-header class="ion-no-border headerColorSameToolbar" >
+  <ion-toolbar *ngIf="!multiDelete" class="toolbarColor2">
     <ion-title>{{name.length>0?'Buscando producto...':'Buscar producto(s)'}}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()">
@@ -9,6 +9,25 @@
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()">
         <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="toolbarColor2" *ngIf="multiDelete">
+    <ion-title>Seleccionados(s) {{productsToDelete?.length}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeMultiDelete()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="allChecked?cleanAllDelete():selectAll()">
+        <ion-icon slot="start" [name]="!allChecked?'checkbox-outline':'checkbox'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!productsToDelete?.length>0" (click)="deleteProducts()">
+        <ion-icon slot="start" name="trash"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -33,22 +52,36 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-grid *ngIf="name.length<=0" fixed class="ion-no-padding">
+<ion-grid *ngIf="!name.length>0" fixed class="ion-no-padding">
   <ion-row>
     <h4 class="ion-margin">Productos por agregar:</h4>
-    <ion-col size="12" *ngFor="let product of products;let i = index" [attr.data-index]="i">
-      <ion-item [id]="'item'+i" lines="none" class="ion-margin">
-        <ion-label>
-          <h2>{{product.name}}</h2>
-          <h3>$ {{product.precio}}</h3>
-        </ion-label>
-        <ion-buttons slot="end">
-          <ion-button (click)="deleteProduct(i)">
-            <ion-icon name="trash" slot="start"></ion-icon>
-          </ion-button>
-        </ion-buttons>
+    <ion-col size="12">
+      <ion-list appAnimateItems className="exit-enter-styles" lines="none">
+        <ion-item appLongPress (longPressed)="activateMultiDelete()" *ngFor="let product of products;let i = index" [attr.data-index]="i" [id]="'item'+i" lines="none" class="ion-margin">
+          <ion-label>
+            <h2>{{product.name}}</h2>
+            <h3>$ {{product.precio}}</h3>
+            <h3>Cantidad: {{product.cantidad}}</h3>
+          </ion-label>
+          <ion-checkbox (click)="addToDelete(i)" #ckeckBoxs [@checkItemsDelete] slot="end" *ngIf="multiDelete"></ion-checkbox>
+          <ion-buttons style="margin: 0;"  slot="end">
+            <ion-button [disabled]="multiDelete" (click)="edit(i)">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+  <ion-backdrop [@checkItemsDelete] (click)="edit(-1)"  style="opacity: 1;background-color: rgba(0,0,0,0.5);" *ngIf="editProd" [tappable]="false"></ion-backdrop>
+  <ion-row appShowInput (closeEdit)="editProd=false" [editProd]="editProd" style="transition: 0.12s;display: none;position: absolute;bottom: 0;right: 0;left: 0;z-index: 10;">
+    <ion-col size="12">
+      <ion-item style="--border-radius: 0;">
+        <ion-label position="floating">Cantidad</ion-label>
+        <ion-input [placeholder]="editProd?products[productToEdit]['name']:''" type="number" inputmode="numeric" appNumberInput (ionChange)="setCantidad($event)"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
 </ion-grid>
 </ion-content>
+

@@ -1,86 +1,101 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { Component, Input, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { IonCheckbox, ModalController, Platform } from '@ionic/angular';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
-import { trigger, style, animate, transition } from '@angular/animations';
 import { Product } from 'src/model/product';
+import { FadeInAndOut } from '../../animations/fadeInOutAnimation';
 @Component({
   selector: 'app-search-product',
   templateUrl: './search-product.page.html',
   styleUrls: ['./search-product.page.scss'],
   animations: [
-    trigger('animationSearchProd1',
-      [
-        transition(':enter', [style({ opacity: 0 }), animate('0.12s ease-out', style({ opacity: 1 }))]),
-        transition(':leave', [style({ opacity: 1 }), animate('0.12s ease-in', style({ opacity: 0 }))])
-      ]
-    ),
-
-    trigger('animationSearchProd2',
-    [
-      transition(':enter',[style({opacity:0}),animate('0.12s ease-out',style({opacity:1}))]),
-      transition(':leave',[style({opacity:1}),animate('0.12s ease-in',style({opacity:0}))])
-    ]
-    )
-  ]
+    new FadeInAndOut().configAnimation()]
 })
 export class SearchProductPage implements OnInit {
-  @Input() productsAggregates:Array<Product[]> =[];
-  products: Array<any> = [];
+  @Input() productsAggregates: Array<Product[]> = [];
+  @ViewChildren("ckeckBoxs") checkBoxs: QueryList<IonCheckbox>;
+
+  editProd:boolean=false;
+  productToEdit:number=-1;
+  products: Array<any> =  [];
+  // [{name:'Coca cola1',precio:15.50,id_product:1,cantidad:1},
+  // {name:'Coca cola2',precio:15.50,id_product:2,cantidad:1},
+  // {name:'Coca cola3',precio:15.50,id_product:3,cantidad:1},
+  // {name:'Coca cola4',precio:15.50,id_product:4,cantidad:1}];
   productsFound: Array<Product[]> = [];
-  // productsFound: Array<any> = [{name:'Coca cola1',precio:15.50,id_product:1},
-  // {name:'Coca cola2',precio:15.50,id_product:2},
-  // {name:'Coca cola3',precio:15.50,id_product:3},
-  // {name:'Coca cola4',precio:15.50,id_product:4}];
   name: string = '';
-  show1:boolean=false;
-  show2:boolean=true;
+
+  multiDelete: boolean = false;
+
+  productsToDelete: any[] = [];
+  deleteAll: boolean = false;
   constructor(private db: DatabaseService, private modalController: ModalController,
-    private componentsUtilsService: ComponentsUtilsService,) { }
+    private componentsUtilsService: ComponentsUtilsService,private platform:Platform) { 
+      this.platform.backButton.subscribeWithPriority(10,()=>{
+        if(this.editProd){
+          this.edit(-1);
+        }
+      })
+    }
 
   ngOnInit() {
   }
 
   async closeModal() {
     await this.modalController.dismiss({
-      products:this.products
+      products: this.products
     });
   }
 
-  async searchProduct() {
-    if (this.name.length > 0) {
-      await this.componentsUtilsService.presentLoading1();
-      await this.db.findProductByName(this.name);
-      this.db.getProductsFound().subscribe(res => {
-        this.productsFound = res;
-      })
-      await this.componentsUtilsService.dismissLoading1();
-      if (!this.existProduct) {
-        this.componentsUtilsService.presentToast1('No se encontró ningún producto.');
+   searchProduct() {
+    this.db.dbState().subscribe(async (res)=>{
+      if(res){
+        if (this.name.length > 0) {
+          await this.componentsUtilsService.presentLoading1();
+          await this.db.findProductByName(this.name);
+          this.db.getProductsFound().subscribe(res => {
+            this.productsFound = res;
+          })
+          await this.componentsUtilsService.dismissLoading1();
+          if (!this.existProduct) {
+            this.componentsUtilsService.presentToast1('No se encontró ningún producto.');
+          }
+        }
+        else {
+          this.componentsUtilsService.presentToast1('Ingrese el nombre del producto.')
+        }
+      }else{
+        this.componentsUtilsService.presentToast1('No se puede conectar con las base de datos.')
       }
+    })
+  }
+
+  edit(i:number){
+    this.editProd= !this.editProd
+    if(this.editProd){
+      this.productToEdit = i;
     }
-    else {
-      this.componentsUtilsService.presentToast1('Ingrese el nombre del producto.')
+    else{
+      this.productToEdit=i;
+    }
+  }
+
+  setCantidad(ev:any){
+    if(this.editProd){
+      var cantidad = ev.detail.value;
+      this.products[this.productToEdit]['cantidad'] = cantidad == ''?1:parseInt(cantidad);
     }
   }
 
   addProduct(product: Object) {
-    if(this.checkProduct(product)){
+    if (this.checkProduct(product)) {
       this.componentsUtilsService.presentToast1('Este producto ya fue agregado.')
     }
-    else{
+    else {
+      product['cantidad'] = 1;
       this.products.push(product);
       this.cleanListProductsFound();
     }
-  }
-
-  deleteProduct(index: number) {
-    const heigth = document.getElementById(`item${index}`).offsetHeight;
-    document.getElementById(`item${index}`).animate([
-      { height: `${heigth}px`, transform: 'translateX(0%)' },
-      { height: '0px', transform: 'translateX(100%)' }
-    ], { duration: 250 })
-    setTimeout(() => { this.products.splice(index, 1); }, 250)
   }
   cleanListProductsFound() {
     // this.productsFound = [];
@@ -91,9 +106,67 @@ export class SearchProductPage implements OnInit {
     return this.productsFound.length > 0;
   }
 
-  checkProduct(product:Object){
-    return this.productsAggregates.some((prod)=>{
+  checkProduct(product: Object) {
+    return this.productsAggregates.some((prod) => {
       return prod['id_product'] == product['id_product'];
     })
+  }
+
+  addToDelete(id: number) {
+    if (this.productsToDelete.includes(id)) {
+      this.productsToDelete = this.productsToDelete.filter((value) => value != id)
+    } else {
+      this.productsToDelete.push(id);
+    }
+    // console.log(this.productsToDelete)
+  }
+
+  activateMultiDelete() {
+    this.multiDelete = true;
+  }
+
+  closeMultiDelete() {
+    this.multiDelete = false;
+    this.productsToDelete=[]
+  }
+
+  cleanAllDelete() {
+    this.checkedCheckBoxs(false)
+    this.deleteAll = false;
+    this.productsToDelete = [];
+  }
+
+  selectAll() {
+    this.deleteAll = true;
+    this.checkedCheckBoxs(true);
+    this.productsToDelete = [];
+    this.products.forEach((item, index) => {
+      this.productsToDelete.push(index)
+    });
+  }
+
+  deleteProducts() {
+    this.products = this.products.filter((value,index)=>{
+      return !this.productsToDelete.includes(index);
+    });
+    this.productsToDelete=[];
+    this.closeMultiDelete();
+    this.checkedCheckBoxs(false);
+  }
+
+  checkedCheckBoxs(checked: boolean) {
+    this.checkBoxs['_results'].forEach((item) => {
+      item['checked'] = checked
+    });
+  }
+
+  get allChecked() {
+    if (this.checkBoxs.length > 0) {
+      return this.checkBoxs['_results'].every((currentValue) => {
+        return currentValue['checked'] == true;
+      });
+    } else {
+      return false;
+    }
   }
 }

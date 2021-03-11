@@ -19,6 +19,7 @@ nameList TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS detail_list (
 id_detail_list INTEGER PRIMARY KEY AUTOINCREMENT,
 products_id INTEGER NOT NULL,
+cantidad REAL NOT NULL,
 list_id INTEGER NOT NULL,CONSTRAINT "products-detail_list"
 FOREIGN KEY (products_id)
 REFERENCES products(id_product)

@@ -7,7 +7,7 @@ export class SumPricePipe implements PipeTransform {
 
   transform(products:Array<any>){
     return products.reduce((accumulator, currentValue)=>{
-      return accumulator + currentValue['precio'];
+      return accumulator + (currentValue['precio']*currentValue['cantidad']);
     },0)
   }
 

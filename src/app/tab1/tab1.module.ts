@@ -7,6 +7,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab1PageRoutingModule } from './tab1-routing.module';
 import { AnimateItemsDirective } from '../directives/animate-items.directive';
+import { DirectivesModule } from '../directives/directives.module';
 
 @NgModule({
   imports: [
@@ -14,8 +15,9 @@ import { AnimateItemsDirective } from '../directives/animate-items.directive';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    Tab1PageRoutingModule
+    Tab1PageRoutingModule,
+    DirectivesModule
   ],
-  declarations: [Tab1Page,AnimateItemsDirective]
+  declarations: [Tab1Page]
 })
 export class Tab1PageModule {}

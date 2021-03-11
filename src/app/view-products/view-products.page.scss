@@ -1,6 +1,13 @@
 ion-item{
     --background:#041266;
     --border-radius:15px;
-    margin:20px 10px;
+    // margin:20px 10px;
     transition: 0.25s ease-in-out;
+}
+ion-row{
+    padding: 0;
+}
+
+ion-col{
+    padding: 0;
 }

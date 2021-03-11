@@ -31,7 +31,7 @@ export class DatabaseService {
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')) {
         this.openBd().then(() => {
-          this.createTable();
+          this.createTable(false);
         })
       }
     })
@@ -47,18 +47,22 @@ export class DatabaseService {
       });
   }
 
-  private createTable() {
-    // this.sqlite.deleteDatabase({name:'list_db.db',location:'default'}).then(()=>{})
-    this.httpClient.get('assets/seed.sql', { responseType: 'text' })
-      .subscribe(data => {
-        this.sqlPorter.importSqlToDb(this.storage, data)
-          .then((_) => {
-            this.isDbReady.next(true);
-          })
-          .catch((error) => {
-            console.error(error)
-          })
-      });
+  private createTable(deleteDb: boolean) {
+    if (deleteDb) {
+      this.sqlite.deleteDatabase({ name: 'list_db.db', location: 'default' }).then(() => { })
+    } else {
+      this.httpClient.get('assets/seed.sql', { responseType: 'text' })
+        .subscribe(data => {
+          this.sqlPorter.importSqlToDb(this.storage, data)
+            .then((_) => {
+              this.isDbReady.next(true);
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        });
+    }
+
   }
 
   dbState() {
@@ -153,54 +157,54 @@ export class DatabaseService {
     return this.storage.executeSql('INSERT INTO list (nameList,date) VALUES (?,?)', [name.trim(), date.trim()])
       .then((res) => {
         const idList = res.insertId;
-        products.forEach(async (prod, index, array) => {
+        Promise.all(
+          products.map(async (prod, index, array) => {
 
-          const data = [prod['id_product'], idList]
-          this.storage.executeSql('INSERT INTO detail_list (products_id,list_id) VALUES (?,?)', data).then(res => {
-
-          }).catch(e => {
-            error = true;
-          });
-
-          if (index == array.length - 1) {
-            if (error) {
-              await this.componentsUtilsService.presentToast1('Algunos productos no pudieron agregarse en la lista.');
+            const data = [prod['id_product'], idList,prod['cantidad']]
+            await this.storage.executeSql('INSERT INTO detail_list (products_id,list_id,cantidad) VALUES (?,?,?)', data).catch(e => {
+              error = true;
+            });
+            
+            if (index == array.length - 1) {
+              if (error) {
+                await this.componentsUtilsService.presentToast1('Algunos productos no pudieron agregarse en la lista.');
+              }
+              else {
+                await this.componentsUtilsService.presentToast1('Lista registrada con exito.');
+              }
             }
-            else {
-              await this.componentsUtilsService.presentToast1('Lista registrada con exito.');
-            }
-          }
-
-        })
+  
+          })
+        )
       }).catch(e => {
         this.componentsUtilsService.presentToast1('Ocurrió un error al guardar la lista.')
       })
   }
 
-  loadLists(){
-    return this.storage.executeSql('SELECT * FROM list',[])
-    .then((res)=>{
-      let items: List[] = [];
-      if(res.rows.length>0){
-        for (let index = 0; index < res.rows.length; index++) {
-          items.push({
-            id_list:res.rows.item(index).id_list,
-            nameList:res.rows.item(index).nameList,
-            date:res.rows.item(index).date
-          });
+  loadLists() {
+    return this.storage.executeSql('SELECT * FROM list', [])
+      .then((res) => {
+        let items: List[] = [];
+        if (res.rows.length > 0) {
+          for (let index = 0; index < res.rows.length; index++) {
+            items.push({
+              id_list: res.rows.item(index).id_list,
+              nameList: res.rows.item(index).nameList,
+              date: res.rows.item(index).date
+            });
+          }
         }
-      }
-      this.lists.next(items);
-    })
+        this.lists.next(items);
+      })
   }
 
-  getLists(){
+  getLists() {
     return this.lists.asObservable();
   }
 
   // DetailList methods
-  loadDetailLists(idList:string) {
-    return this.storage.executeSql('SELECT l.id_list,dl.id_detail_list,dl.products_id,l.nameList,l.date,prod.name, prod.precio from list l INNER JOIN detail_list dl ON l.id_list = dl.list_id INNER JOIN products prod on dl.products_id = prod.id_product WHERE l.id_List = ?', [idList])
+  loadDetailLists(idList: string) {
+    return this.storage.executeSql('SELECT l.id_list,dl.id_detail_list,dl.products_id,l.nameList,l.date,prod.name, prod.precio,dl.cantidad from list l INNER JOIN detail_list dl ON l.id_list = dl.list_id INNER JOIN products prod on dl.products_id = prod.id_product WHERE l.id_List = ?', [idList])
       .then((res) => {
         let items: DetailList[] = [];
         if (res.rows.length > 0) {
@@ -209,10 +213,11 @@ export class DatabaseService {
               id_list: res.rows.item(i).id_list,
               id_detail_list: res.rows.item(i).id_detail_list,
               products_id: res.rows.item(i).products_id,
-              nameList:res.rows.item(i).nameList,
-              date:res.rows.item(i).date,
-              name:res.rows.item(i).name,
-              precio:res.rows.item(i).precio
+              nameList: res.rows.item(i).nameList,
+              date: res.rows.item(i).date,
+              name: res.rows.item(i).name,
+              precio: res.rows.item(i).precio,
+              cantidad:res.rows.item(i).cantidad
             });
           }
         }
@@ -223,28 +228,28 @@ export class DatabaseService {
       })
   }
 
-  getDetailLists(){
+  getDetailLists() {
     return this.listDetailList.asObservable();
   }
 
-  async deleteProductsFromDetailList(ids_detail_list:any[]){
+  async deleteProductsFromDetailList(ids_detail_list: any[]) {
     await this.componentsUtilsService.presentLoading1();
-    var error=false;
+    var error = false;
     await Promise.all(
-      ids_detail_list.map(async (item)=>{
-        
-          await this.storage.executeSql('DELETE FROM detail_list WHERE id_detail_list = ?',[item])
-          .catch(e=>{
-            error=true;
+      ids_detail_list.map(async (item) => {
+
+        await this.storage.executeSql('DELETE FROM detail_list WHERE id_detail_list = ?', [item])
+          .catch(e => {
+            error = true;
           });
-        
+
       })
     );
 
     await this.componentsUtilsService.dismissLoading1();
     await this.componentsUtilsService.presentToast1(
-      error?'Algunos productos no pudieron ser eliminados.':
-      'Productos eliminados.'
+      error ? 'Algunos productos no pudieron ser eliminados.' :
+        'Productos eliminados.'
     )
   }
 

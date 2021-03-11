@@ -1,10 +1,11 @@
-import { Component, OnChanges, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnChanges, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { DetailList } from '../../model/detailList';
 import { FadeInAndOut } from '../../animations/fadeInOutAnimation';
 import { ScrollHideConfig } from '../directives/header-animate1.directive';
+import { IonCheckbox } from '@ionic/angular';
 
 @Component({
   selector: 'app-view-detail-list',
@@ -13,8 +14,9 @@ import { ScrollHideConfig } from '../directives/header-animate1.directive';
   animations: [new FadeInAndOut().configAnimation()],
 })
 export class ViewDetailListPage implements OnInit {
+  @ViewChildren("ckeckBoxs") checkBoxs: QueryList<IonCheckbox>;
   // products;
-  detailList: any[] = [];
+  detailList: DetailList[] = [];
   dataList: Object = {};
   multiDelete: boolean = false;
 
@@ -25,7 +27,8 @@ export class ViewDetailListPage implements OnInit {
 
   // headerScrollConfig:ScrollHideConfig ={cssProperty:'margin-top',maxValue:44};
   // // @ViewChild('content',{read:ElementRef,static:true}) content:ElementRef;
-  constructor(private router: Router, private route: ActivatedRoute, private db: DatabaseService, private componentsUtilsService: ComponentsUtilsService,
+  constructor(private router: Router, private route: ActivatedRoute, 
+              private db: DatabaseService, private componentsUtilsService: ComponentsUtilsService,
   ) {
     // this.detailList = [
     //   { name: 'Coca-Cola1', precio: 15.20, date: new Date(), id_detail_list: 1 },
@@ -41,6 +44,7 @@ export class ViewDetailListPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.componentsUtilsService.setTabStatusBar('tab2')
     await this.getDetailList();
   }
 
@@ -54,7 +58,6 @@ export class ViewDetailListPage implements OnInit {
         var idList = this.route.snapshot.paramMap.get('idList');
         await this.db.loadDetailLists(idList);
         this.db.getDetailLists().subscribe((res) => {
-          console.log(res)
           this.detailList = res;
           this.dataList = {
             date: res[0]['date'],
@@ -78,6 +81,7 @@ export class ViewDetailListPage implements OnInit {
 
   addAllToDelete() {
     this.deleteAll = true;
+    this.checkedCheckBoxs(true);
     this.productsToDelete = [];
     this.detailList.forEach((item) => {
       this.productsToDelete.push(item['id_detail_list'])
@@ -85,6 +89,7 @@ export class ViewDetailListPage implements OnInit {
   }
 
   cleanDeleteAll() {
+    this.checkedCheckBoxs(false)
     this.deleteAll = false;
     this.productsToDelete = [];
   }
@@ -105,5 +110,21 @@ export class ViewDetailListPage implements OnInit {
        this.getDetailList();
     }
 
+  }
+
+  checkedCheckBoxs(checked: boolean) {
+    this.checkBoxs['_results'].forEach((item) => {
+      item['checked'] = checked
+    });
+  }
+
+  get allChecked() {
+    if (this.checkBoxs.length > 0) {
+      return this.checkBoxs['_results'].every((currentValue) => {
+        return currentValue['checked'] == true;
+      });
+    } else {
+      return false;
+    }
   }
 }
