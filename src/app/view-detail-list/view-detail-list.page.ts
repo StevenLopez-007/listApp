@@ -11,22 +11,24 @@ import { IonCheckbox } from '@ionic/angular';
   selector: 'app-view-detail-list',
   templateUrl: './view-detail-list.page.html',
   styleUrls: ['./view-detail-list.page.scss'],
-  animations: [new FadeInAndOut().configAnimation()],
+  animations: [new FadeInAndOut().configAnimation(),new FadeInAndOut().configAnimationTranslateEdit()],
 })
 export class ViewDetailListPage implements OnInit {
   @ViewChildren("ckeckBoxs") checkBoxs: QueryList<IonCheckbox>;
   // products;
   detailList: DetailList[] = [];
   dataList: Object = {};
+
+  showItem: Object = {
+    item1: true,
+    item2: false
+  };
   multiDelete: boolean = false;
 
   productsToDelete: any[] = [];
   deleteAll: boolean = false;
 
   search:string='';
-
-  // headerScrollConfig:ScrollHideConfig ={cssProperty:'margin-top',maxValue:44};
-  // // @ViewChild('content',{read:ElementRef,static:true}) content:ElementRef;
   constructor(private router: Router, private route: ActivatedRoute, 
               private db: DatabaseService, private componentsUtilsService: ComponentsUtilsService,
   ) {
@@ -70,6 +72,7 @@ export class ViewDetailListPage implements OnInit {
 
   configGesturePressStart(ev: any) {
     this.multiDelete = true;
+    this.showItem['item1'] = false;
   }
   addToDelete(id: number) {
     if (this.productsToDelete.includes(id)) {
@@ -96,6 +99,7 @@ export class ViewDetailListPage implements OnInit {
 
   closeMultiDelete() {
     this.multiDelete = false;
+    this.showItem['item2'] = false;
     this.productsToDelete = [];
   }
 
@@ -116,6 +120,22 @@ export class ViewDetailListPage implements OnInit {
     this.checkBoxs['_results'].forEach((item) => {
       item['checked'] = checked
     });
+  }
+
+  animationEnd(ev: AnimationEvent, item: number) {
+    if (item == 1) {
+      if (ev['toState'] == 'void') {
+        if (!this.showItem['item2']) {
+          this.showItem['item2'] = true;
+        }
+      }
+    }else{
+      if(ev['toState']=='void'){
+        if (!this.showItem['item1']) {
+          this.showItem['item1'] = true;
+        }
+      }
+    }
   }
 
   get allChecked() {

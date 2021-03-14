@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, Input, OnInit, ViewChildren, QueryList, HostBinding } from '@angular/core';
 import { IonCheckbox, ModalController, Platform } from '@ionic/angular';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
@@ -9,15 +9,16 @@ import { FadeInAndOut } from '../../animations/fadeInOutAnimation';
   templateUrl: './search-product.page.html',
   styleUrls: ['./search-product.page.scss'],
   animations: [
-    new FadeInAndOut().configAnimation()]
+    new FadeInAndOut().configAnimation(),
+    new FadeInAndOut().configAnimationTranslateEdit()]
 })
 export class SearchProductPage implements OnInit {
   @Input() productsAggregates: Array<Product[]> = [];
   @ViewChildren("ckeckBoxs") checkBoxs: QueryList<IonCheckbox>;
 
-  editProd:boolean=false;
-  productToEdit:number=-1;
-  products: Array<any> =  [];
+  editProd: boolean = false;
+  productToEdit: number = -1;
+  products: Array<any> = [];
   // [{name:'Coca cola1',precio:15.50,id_product:1,cantidad:1},
   // {name:'Coca cola2',precio:15.50,id_product:2,cantidad:1},
   // {name:'Coca cola3',precio:15.50,id_product:3,cantidad:1},
@@ -25,18 +26,23 @@ export class SearchProductPage implements OnInit {
   productsFound: Array<Product[]> = [];
   name: string = '';
 
-  multiDelete: boolean = false;
+  // multiDelete: boolean = false;
+
+  showItem: Object = {
+    item1: true,
+    item2: false
+  };
 
   productsToDelete: any[] = [];
   deleteAll: boolean = false;
   constructor(private db: DatabaseService, private modalController: ModalController,
-    private componentsUtilsService: ComponentsUtilsService,private platform:Platform) { 
-      this.platform.backButton.subscribeWithPriority(10,()=>{
-        if(this.editProd){
-          this.edit(-1);
-        }
-      })
-    }
+    private componentsUtilsService: ComponentsUtilsService, private platform: Platform) {
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      if (this.editProd) {
+        this.edit(-1);
+      }
+    })
+  }
 
   ngOnInit() {
   }
@@ -47,9 +53,9 @@ export class SearchProductPage implements OnInit {
     });
   }
 
-   searchProduct() {
-    this.db.dbState().subscribe(async (res)=>{
-      if(res){
+  searchProduct() {
+    this.db.dbState().subscribe(async (res) => {
+      if (res) {
         if (this.name.length > 0) {
           await this.componentsUtilsService.presentLoading1();
           await this.db.findProductByName(this.name);
@@ -64,26 +70,26 @@ export class SearchProductPage implements OnInit {
         else {
           this.componentsUtilsService.presentToast1('Ingrese el nombre del producto.')
         }
-      }else{
+      } else {
         this.componentsUtilsService.presentToast1('No se puede conectar con las base de datos.')
       }
     })
   }
 
-  edit(i:number){
-    this.editProd= !this.editProd
-    if(this.editProd){
+  edit(i: number) {
+    this.editProd = !this.editProd
+    if (this.editProd) {
       this.productToEdit = i;
     }
-    else{
-      this.productToEdit=i;
+    else {
+      this.productToEdit = i;
     }
   }
 
-  setCantidad(ev:any){
-    if(this.editProd){
+  setCantidad(ev: any) {
+    if (this.editProd) {
       var cantidad = ev.detail.value;
-      this.products[this.productToEdit]['cantidad'] = cantidad == ''?1:parseInt(cantidad);
+      this.products[this.productToEdit]['cantidad'] = cantidad == '' ? 1 : parseInt(cantidad);
     }
   }
 
@@ -122,12 +128,14 @@ export class SearchProductPage implements OnInit {
   }
 
   activateMultiDelete() {
-    this.multiDelete = true;
+    // this.multiDelete = true;
+    this.showItem['item1'] = false;
   }
 
   closeMultiDelete() {
-    this.multiDelete = false;
-    this.productsToDelete=[]
+    // this.multiDelete = false;
+    this.showItem['item2'] = false;
+    this.productsToDelete = []
   }
 
   cleanAllDelete() {
@@ -146,10 +154,10 @@ export class SearchProductPage implements OnInit {
   }
 
   deleteProducts() {
-    this.products = this.products.filter((value,index)=>{
+    this.products = this.products.filter((value, index) => {
       return !this.productsToDelete.includes(index);
     });
-    this.productsToDelete=[];
+    this.productsToDelete = [];
     this.closeMultiDelete();
     this.checkedCheckBoxs(false);
   }
@@ -158,6 +166,22 @@ export class SearchProductPage implements OnInit {
     this.checkBoxs['_results'].forEach((item) => {
       item['checked'] = checked
     });
+  }
+
+  animationEnd(ev: AnimationEvent, item: number) {
+    if (item == 1) {
+      if (ev['toState'] == 'void') {
+        if (!this.showItem['item2']) {
+          this.showItem['item2'] = true;
+        }
+      }
+    }else{
+      if(ev['toState']=='void'){
+        if (!this.showItem['item1']) {
+          this.showItem['item1'] = true;
+        }
+      }
+    }
   }
 
   get allChecked() {

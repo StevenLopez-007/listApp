@@ -1,13 +1,25 @@
 <ion-header [class]="multiDelete?'':'ion-no-border'" class="headerColorSameToolbar">
-  <ion-toolbar class="toolbarColor2">
-    <ion-title class="ion-text-center">{{multiDelete?'Seleccionado(s): '+ (productsToDelete?.length):'Detalle de la lista'}}</ion-title>
+  
+  <ion-toolbar (@translateElement.done)="animationEnd($event,1)" [@translateElement] *ngIf="showItem.item1" class="toolbarColor2">
+    <ion-title class="ion-text-center">Detalle de la lista</ion-title>
     <ion-buttons slot="start">
-      <ion-button (click)="multiDelete?closeMultiDelete():close()">
+      <ion-button (click)="close()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+
+  <!-- ------- -->
+  <ion-toolbar (@translateElement.done)="animationEnd($event,2)" [@translateElement] *ngIf="showItem.item2" class="toolbarColor2">
+    <ion-title class="ion-text-center">Seleccionado(s): {{productsToDelete?.length}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeMultiDelete()">
         <ion-icon slot="start" name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
 
-    <ion-buttons *ngIf="multiDelete" slot="end">
+    <ion-buttons slot="end">
       <ion-button (click)="allChecked?cleanDeleteAll():addAllToDelete()">
         <ion-icon slot="start" [name]="!allChecked?'checkbox-outline':'checkbox'"></ion-icon>
       </ion-button>

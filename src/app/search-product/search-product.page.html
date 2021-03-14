@@ -1,5 +1,5 @@
 <ion-header class="ion-no-border headerColorSameToolbar" >
-  <ion-toolbar *ngIf="!multiDelete" class="toolbarColor2">
+  <ion-toolbar (@translateElement.done)="animationEnd($event,1)" [@translateElement] *ngIf="showItem.item1" class="toolbarColor2">
     <ion-title>{{name.length>0?'Buscando producto...':'Buscar producto(s)'}}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()">
@@ -13,7 +13,7 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar class="toolbarColor2" *ngIf="multiDelete">
+  <ion-toolbar (@translateElement.done)="animationEnd($event,2)" [@translateElement] class="toolbarColor2" *ngIf="showItem.item2">
     <ion-title>Seleccionados(s) {{productsToDelete?.length}}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="closeMultiDelete()">
@@ -57,15 +57,15 @@
     <h4 class="ion-margin">Productos por agregar:</h4>
     <ion-col size="12">
       <ion-list appAnimateItems className="exit-enter-styles" lines="none">
-        <ion-item appLongPress (longPressed)="activateMultiDelete()" *ngFor="let product of products;let i = index" [attr.data-index]="i" [id]="'item'+i" lines="none" class="ion-margin">
+        <ion-item  appLongPress (longPressed)="activateMultiDelete()" *ngFor="let product of products;let i = index" [attr.data-index]="i" [id]="'item'+i" lines="none" class="ion-margin">
           <ion-label>
             <h2>{{product.name}}</h2>
             <h3>$ {{product.precio}}</h3>
             <h3>Cantidad: {{product.cantidad}}</h3>
           </ion-label>
-          <ion-checkbox (click)="addToDelete(i)" #ckeckBoxs [@checkItemsDelete] slot="end" *ngIf="multiDelete"></ion-checkbox>
-          <ion-buttons style="margin: 0;"  slot="end">
-            <ion-button [disabled]="multiDelete" (click)="edit(i)">
+          <ion-checkbox  (click)="addToDelete(i)" #ckeckBoxs [@checkItemsDelete] slot="end" *ngIf="showItem.item2"></ion-checkbox>
+          <ion-buttons [@checkItemsDelete] *ngIf="showItem.item1" style="margin: 0;"  slot="end">
+            <ion-button  (click)="edit(i)">
               <ion-icon name="create-outline" slot="start"></ion-icon>
             </ion-button>
           </ion-buttons>
