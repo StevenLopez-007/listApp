@@ -9,7 +9,7 @@ import { ComponentsUtilsService } from './components-utils.service';
 import { Product } from '../model/product';
 import { DetailList } from '../model/detailList';
 import { List } from '../model/list';
-import { type } from 'os';
+import { CategoryCountProducts } from '../model/categoryCountProduct';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,7 @@ export class DatabaseService {
   private isDbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   categoriesList = new BehaviorSubject([]);
+  categoriesCountProduct = new BehaviorSubject([]);
   productsSearchList = new BehaviorSubject([]);
 
   listDetailList = new BehaviorSubject([]);
@@ -32,7 +33,7 @@ export class DatabaseService {
       if (this.platform.is('cordova')) {
         this.openBd().then(() => {
           this.createTable(false);
-        })
+        });
       }
     })
   }
@@ -91,6 +92,32 @@ export class DatabaseService {
   getCategories(): Observable<Category[]> {
     return this.categoriesList.asObservable();
   }
+
+  loadCategoriesWithCountProduct(){
+    return this.storage.executeSql('select cat.nameCat,cat.id_categoria, Count(prod.categoria_id) as countProducts from categoria cat left join products prod on prod.categoria_id = cat.id_categoria group by cat.nameCat,cat.id_categoria',[])
+    .then((res)=>{
+      let items:CategoryCountProducts[]=[];
+
+      if(res.rows.length >0){
+        for (let index = 0; index < res.rows.length; index++) {
+          items.push({
+            id_categoria:res.rows.item(index).id_categoria,
+            nameCat:res.rows.item(index).nameCat,
+            countProducts:res.rows.item(index).countProducts,
+          });
+        }
+      }
+
+      this.categoriesCountProduct.next(items);
+    }).catch((e)=>{
+      this.componentsUtilsService.presentToast1('Ocurrió un error al cargar las categorías.')
+    })
+  }
+
+  getCategoriesWithCount():Observable<CategoryCountProducts[]>{
+    return this.categoriesCountProduct.asObservable();
+  }
+
   addCategory(name: string) {
     let data = [name.trim()];
     return this.storage.executeSql('INSERT INTO categoria (nameCat) VALUES (?)', data)

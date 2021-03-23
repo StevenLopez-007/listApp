@@ -1,17 +1,17 @@
-import { Component, OnChanges, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { DetailList } from '../../model/detailList';
-import { FadeInAndOut } from '../../animations/fadeInOutAnimation';
-import { ScrollHideConfig } from '../directives/header-animate1.directive';
+import { checkItemsDelete,translateElement } from '../../animations/fadeInOutAnimation';
 import { IonCheckbox } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 @Component({
   selector: 'app-view-detail-list',
   templateUrl: './view-detail-list.page.html',
   styleUrls: ['./view-detail-list.page.scss'],
-  animations: [new FadeInAndOut().configAnimation(),new FadeInAndOut().configAnimationTranslateEdit()],
+  animations: [checkItemsDelete,translateElement],
 })
 export class ViewDetailListPage implements OnInit {
   @ViewChildren("ckeckBoxs") checkBoxs: QueryList<IonCheckbox>;
@@ -31,6 +31,7 @@ export class ViewDetailListPage implements OnInit {
   search:string='';
   constructor(private router: Router, private route: ActivatedRoute, 
               private db: DatabaseService, private componentsUtilsService: ComponentsUtilsService,
+              private cdr: ChangeDetectorRef,private splashScreen:SplashScreen
   ) {
     // this.detailList = [
     //   { name: 'Coca-Cola1', precio: 15.20, date: new Date(), id_detail_list: 1 },
@@ -46,8 +47,12 @@ export class ViewDetailListPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.componentsUtilsService.setTabStatusBar('tab2')
     await this.getDetailList();
+  }
+
+   ionViewDidEnter(){
+    this.componentsUtilsService.setTabStatusBar('tab2');
+    this.splashScreen.hide();
   }
 
   close() {
@@ -58,6 +63,7 @@ export class ViewDetailListPage implements OnInit {
     this.db.dbState().subscribe(async (res) => {
       if (res) {
         var idList = this.route.snapshot.paramMap.get('idList');
+        console.log(idList)
         await this.db.loadDetailLists(idList);
         this.db.getDetailLists().subscribe((res) => {
           this.detailList = res;
@@ -65,7 +71,9 @@ export class ViewDetailListPage implements OnInit {
             date: res[0]['date'],
             nameList: res[0]['nameList']
           }
-        })
+          this.cdr.detectChanges();
+        });
+        console.log(this.detailList)
       }
     })
   }

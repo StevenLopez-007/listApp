@@ -1,7 +1,7 @@
 <ion-grid fixed class="ion-no-padding">
     <ion-row >
-        <ion-col class="ion-margin-top" size="12" style="display: flex;justify-content: space-between; padding: 0px 10px;">
-            <button (click)="saveList()" class="button" style="margin: 0px;">Guargar lista.</button>
+        <ion-col class="ion-margin-top" size="12" style="display: flex;justify-content: center; padding: 0px 10px;">
+            <!-- <button (click)="saveList()" class="button" style="margin: 0px;">Guargar lista.</button> -->
             <button (click)="searchProduct()" class="button" style="margin: 0px;">Agregar producto(s)</button>
         </ion-col>
     </ion-row>
@@ -14,7 +14,7 @@
         <ion-col size="12">
             <ion-item lines = none>
                 <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
-                <ion-input [(ngModel)]="nameList" required type="text"></ion-input>
+                <ion-input (keyup.enter)="saveList()" [(ngModel)]="nameList" required type="text"></ion-input>
             </ion-item>
         </ion-col>
     </ion-row>

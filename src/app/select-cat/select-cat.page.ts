@@ -16,6 +16,7 @@ export class SelectCatPage implements OnInit {
 
   ionViewDidEnter(){
     // console.log(this.category)
+    // console.log(this.categories)
   }
 
   async closeSelectCat(){

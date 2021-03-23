@@ -8,6 +8,7 @@ import { Tab2Page } from './tab2.page';
 import {AddCategoryComponentModule} from '../add-category/add-category.module';
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import {AddProductComponentModule} from '../add-product/add-product.module';
+import { DirectivesModule } from '../directives/directives.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {AddProductComponentModule} from '../add-product/add-product.module';
     AddCategoryComponentModule,
     AddProductComponentModule,
     AddListComponentModule,
-    Tab2PageRoutingModule
+    Tab2PageRoutingModule,
+    DirectivesModule
   ],
   declarations: [Tab2Page]
 })

@@ -1,5 +1,5 @@
 <ion-content [fullscreen]="true">
-  <ion-grid fixed>
+  <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col size="12">
         <ion-item lines="none" id="item1">
@@ -13,51 +13,56 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="fadeSwipe">
       <ion-col size="12">
         <ion-item lines="none">
-          <ion-searchbar id="searchbarHome"></ion-searchbar>
+          <ion-searchbar placeholder="Buscar listas ó categoria" id="searchbarHome"></ion-searchbar>
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <h2>Listas anteriores</h2>
-        <ion-slides pager="false" [options]="slidesOptions">
-          <ion-slide *ngFor="let item of [0,0,0,0,0,0]">
-            <ion-card class="card" [style]="colorCard()">
+    <ion-row class="fadeSwipe">
+      <ion-col *ngIf="!categoriesEmpty;else catEmpty" size="12" class="ion-no-padding">
+        <h2 class="ion-padding-start">Categorías.</h2>
+        <ion-slides appAnimateSlides className="exit-slide-animation" pager="false" [options]="slidesOptions">
+          <ion-slide style="transition: 0.25s;" *ngFor="let cat of categories;let i = index" [attr.data-index]="i">
+            <ion-card class="card" [style.background]="''|colorCards:i" (click)="addProduct(cat)">
               <ion-card-header>
-                <ion-card-title color="light">Big Cola</ion-card-title>
-                <ion-card-subtitle color="light"> $56.50</ion-card-subtitle>
+                <ion-card-title color="light">{{cat.nameCat}}</ion-card-title>
+                <ion-card-subtitle color="light">Productos: {{cat.countProducts}}</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
-                <ion-icon name="add-outline"></ion-icon>
+                <ion-icon slot="start" name="add-outline"></ion-icon>
               </ion-card-content>
             </ion-card>
           </ion-slide>
         </ion-slides>
       </ion-col>
+      <ng-template #catEmpty>
+        <ion-col size="12">
+          <h2 style="text-align: center; padding-top: 24px;">No hay categorías.</h2>
+        </ion-col>
+      </ng-template>
     </ion-row>
   </ion-grid>
 
   <div #tuslistas class="tuslistas">
     <div #barSwipe class="barSwipe">
       <ion-icon name="remove-sharp" style="color:black;"></ion-icon>
-      <ion-icon (click)="getLists()" name="refresh-outline" style="transform: rotateY(180deg); color:black; font-size: 34px; position: absolute; right: 0; margin: 0 20px;" ></ion-icon>
+      <ion-icon (click)="getLists();getCategories()" name="refresh-outline" style="transform: rotateY(180deg); color:black; font-size: 34px; position: absolute; right: 0; margin: 0 20px;" ></ion-icon>
     </div>
     <ion-grid fixed *ngIf="!listEmpty;else emptyList">
       <ion-row>
         <ion-col size="12">
-          <h1>Tus listas</h1>
+          <h1 class="ion-padding-start">Tus listas</h1>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12">
           <ion-list appAnimateItems className="exit-enter-styles" lines="none" style="background-color: white;">
-            <ion-item [routerLink]="['/','view-detail-list',list.id_list]" style="margin: 15px 10px; transition: 0.25s ease-in-out;" *ngFor="let list of lists">
+            <ion-item appLongPress (longPressed)="configNotication(list)" [routerLink]="['/','view-detail-list',list['id_list']]" style="margin: 15px 10px; transition: 0.25s ease-in-out;" *ngFor="let list of lists">
               <ion-label>
-                <h2>{{list.nameList}}</h2>
-                <h3>{{list.date | date:'MMM d, yyy'}}</h3>
+                <h2>{{list['nameList']}}</h2>
+                <h3>{{list['date'] | date:'MMM d, yyy'}}</h3>
               </ion-label>
             </ion-item>
           </ion-list>

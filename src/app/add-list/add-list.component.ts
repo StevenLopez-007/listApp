@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
+import { ButtonSaveClickService } from '../../services/button-save-click.service';
 @Component({
   selector: 'app-add-list',
   templateUrl: './add-list.component.html',
@@ -12,7 +13,8 @@ export class AddListComponent implements OnInit {
   products:Array<any> = [];
 
   nameList:string="";
-  constructor(private databaseService:DatabaseService,private componentsUtilsService:ComponentsUtilsService) { 
+  constructor(private databaseService:DatabaseService,private componentsUtilsService:ComponentsUtilsService,
+              private buttonSaveClickService:ButtonSaveClickService) { 
     const date:Date = new Date();
     const day = date.getDate(),
     month = date.getMonth()+1,
@@ -22,6 +24,13 @@ export class AddListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.buttonSaveClickService.click$.subscribe((res)=>{
+      if(res){
+        if(res['tab'] == 2){
+          this.saveList();
+        }
+      }
+    })
   }
 
   async searchProduct(){

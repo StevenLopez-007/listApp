@@ -3,9 +3,7 @@ import { BrowserModule,HammerModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,9 +16,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentsUtilsService } from '../services/components-utils.service';
 import {Keyboard} from '@ionic-native/keyboard/ngx';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
-import { ShowInputDirective } from './directives/show-input.directive';
-import { NumberInputDirective } from './directives/number-input.directive';
-
+import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {Diagnostic} from '@ionic-native/diagnostic/ngx';
+import {DatePicker} from '@ionic-native/date-picker/ngx';
+import { PermissionService } from '../services/permission.service';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -28,13 +28,17 @@ import { NumberInputDirective } from './directives/number-input.directive';
   // exports:[FilterProductsPipe,FilterFoundProductsPipe],
   providers: [
     StatusBar,
-    SplashScreen,
     NativePageTransitions,
     Keyboard,
     SQLite,
     SQLitePorter,
     ScreenOrientation,
     ComponentsUtilsService,
+    PermissionService,
+    LocalNotifications,
+    Diagnostic,
+    DatePicker,
+    SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

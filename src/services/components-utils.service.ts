@@ -5,6 +5,8 @@ import { SelectCatPage } from '../app/select-cat/select-cat.page';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { SearchProductPage } from '../app/search-product/search-product.page';
 import { AnimationAlert1 } from '../animations/alertAnimation1';
+import { PermissionService } from './permission.service';
+import {DatePicker} from '@ionic-native/date-picker/ngx';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +17,10 @@ export class ComponentsUtilsService {
     private statusBar: StatusBar,
     private loadingController: LoadingController,
     private alertController: AlertController,
-    private animationAlert1:AnimationAlert1) { }
+    private animationAlert1:AnimationAlert1,
+    private permissionService:PermissionService,
+    private datePicker:DatePicker
+    ) { }
 
 
   //Toast methods          
@@ -114,11 +119,56 @@ export class ComponentsUtilsService {
 
     await alert.present();
 
-    await alert.onDidDismiss().then((data) => {
-      choice = data
-    })
-    return choice
+    const {data}= await alert.onDidDismiss();
+    return data
   }
+
+  async presentAlertOpenConfig(message:string){
+    const alert = await this.alertController.create({
+      header:'Info',
+      message:message,
+      enterAnimation:this.animationAlert1.enterAnimation,
+      leaveAnimation:this.animationAlert1.leaveAnimation,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role:'cancel'
+        },
+        {
+          text: 'Aceptar',
+          handler: async () => {
+            await this.permissionService.openConfig().catch(async (e)=>{
+              await this.presentToast1('Ocurrió un error al ingresar a las configuraciones.')
+            });
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  //Select Date
+  async pickDate(){
+    const date = await this.datePicker.show({
+      date:new Date(),
+      titleText:'¿Cuando desea recordar esta lista?',
+      mode:'datetime',
+      okText:'Aceptar',
+      cancelText:'Cancelar',
+      minDate:new Date().getTime(),
+      androidTheme:this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
+    }).catch(async (e)=>{
+      if(e!='cancel'){
+        await this.presentToast1('Error al obtener la fecha.');
+      }
+      return 'cancel'
+    });
+
+    return date;
+  }
+
+
   //other utils
   setTabStatusBar(tab: any) {
     switch (tab) {

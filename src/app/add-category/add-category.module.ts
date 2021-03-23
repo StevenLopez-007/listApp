@@ -5,9 +5,10 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { AddCategoryComponent } from './add-category.component';
+import { DirectivesModule } from '../directives/directives.module';
 
 @NgModule({
-  imports: [ CommonModule, FormsModule, IonicModule,ReactiveFormsModule],
+  imports: [ CommonModule, FormsModule, IonicModule,ReactiveFormsModule,DirectivesModule],
   declarations: [AddCategoryComponent],
   exports: [AddCategoryComponent]
 })

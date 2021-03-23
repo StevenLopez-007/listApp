@@ -1,5 +1,5 @@
 import { IonicModule } from '@ionic/angular';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab1Page } from './tab1.page';
@@ -8,6 +8,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import { Tab1PageRoutingModule } from './tab1-routing.module';
 import { AnimateItemsDirective } from '../directives/animate-items.directive';
 import { DirectivesModule } from '../directives/directives.module';
+import { PipesModule } from '../pipes/PipesModule.module';
 
 @NgModule({
   imports: [
@@ -16,8 +17,10 @@ import { DirectivesModule } from '../directives/directives.module';
     FormsModule,
     ExploreContainerComponentModule,
     Tab1PageRoutingModule,
-    DirectivesModule
+    DirectivesModule,
+    PipesModule
   ],
+  schemas:[CUSTOM_ELEMENTS_SCHEMA],
   declarations: [Tab1Page]
 })
 export class Tab1PageModule {}

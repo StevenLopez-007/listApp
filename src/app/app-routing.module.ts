@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { DetailListGuard } from '../guards/detail-list.guard';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'view-detail-list/:idList',
+    canActivate:[DetailListGuard],
     loadChildren: () => import('./view-detail-list/view-detail-list.module').then( m => m.ViewDetailListPageModule)
   }
 ];

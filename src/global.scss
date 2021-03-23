@@ -57,6 +57,11 @@ ion-router-outlet .ion-page {
   transform: translate3d(20px, 0, 0);
 }
 
+.exit-slide-animation{
+  opacity: 0;
+  transform: scale3d(0,0,0);
+}
+
 .toastClass1{
   --background:var(--ion-color-toast1);
   --color:white;

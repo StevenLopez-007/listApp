@@ -1,6 +1,12 @@
 <ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar class="toolbarColor2">
     <ion-title class="ion-text-center">Agregar</ion-title>
+    <ion-buttons slot="end">
+      <ion-button style="--ripple:transparent;" (click)="save($event)">
+        <ion-icon style="font-size: 32px;" name="add-circle-outline"></ion-icon>
+          <!-- Guardar  -->
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbarColor2">
     <ion-segment [(ngModel)]="segment" (ionChange)="segmentChange($event)">
@@ -18,12 +24,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-slides #slides (ionSlideDidChange)="slideChange(slides)" (ionSlidesDidLoad)="slideChange(slides)" pager="false" [options]="slidesOptions">
+  <ion-slides #slides (ionSlideTransitionEnd)="slideChange(slides)" (ionSlidesDidLoad)="slideChange(slides)" pager="false" [options]="slidesOptions">
     <ion-slide>
      <app-add-category></app-add-category>
     </ion-slide>
     <ion-slide>
-     <app-add-product></app-add-product>
+     <app-add-product [category]="categoryToAddProduct"></app-add-product>
     </ion-slide>
     <ion-slide>
       <app-add-list></app-add-list>

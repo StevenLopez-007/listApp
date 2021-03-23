@@ -1,24 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonRefresher } from '@ionic/angular';
 import { convertDeepLinkEntryToJsObjectString } from '@ionic/app-scripts/dist/deep-linking/util';
+import { ButtonSaveClickService } from '../../services/button-save-click.service';
 @Component({
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.scss'],
 })
 export class AddProductComponent implements OnInit {
-  @ViewChild('refresher') refresher: IonRefresher
-  categories: any[] = [];
-  // categories: any[] = [
-  //   { id_categoria: 1, nameCat: 'Comida' },
-  //   { id_categoria: 2, nameCat: 'Soda' },
-  //   { id_categoria: 3, nameCat: 'Refresco' },
-  //   { id_categoria: 4, nameCat: 'Frituras' }];
+  @ViewChild('refresher') refresher: IonRefresher;
+  // categories: any[] = [];
+  categories: any[] = [
+    {nameCat:'Churros',id_categoria:1},{nameCat:'Bebidas',id_categoria:2}];
 
-  category: Object = {};
+  @Input() category: Object = {};
 
   products: Array<any> = [];
   // products = [{
@@ -42,13 +40,21 @@ export class AddProductComponent implements OnInit {
   productForm: FormGroup;
   constructor(private databaseService: DatabaseService,
     private componentsUtilsService: ComponentsUtilsService,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private buttonSaveClickService:ButtonSaveClickService) { }
 
   ngOnInit() {
     this.getCategories();
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(32)]],
       precio: [0, [Validators.required, Validators.pattern(/^([0-9]+\.?[0-9]{0,2})$/)]]
+    });
+    this.buttonSaveClickService.click$.subscribe((res)=>{
+      if(res){
+        if(res['tab'] ==1){
+          this.saveProduct();
+        }
+      }
     })
   }
 

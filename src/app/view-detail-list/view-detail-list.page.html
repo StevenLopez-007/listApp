@@ -1,6 +1,6 @@
 <ion-header [class]="multiDelete?'':'ion-no-border'" class="headerColorSameToolbar">
   
-  <ion-toolbar (@translateElement.done)="animationEnd($event,1)" [@translateElement] *ngIf="showItem.item1" class="toolbarColor2">
+  <ion-toolbar (@translateElement.done)="animationEnd($event,1)" [@translateElement] *ngIf="showItem['item1']" class="toolbarColor2">
     <ion-title class="ion-text-center">Detalle de la lista</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="close()">
@@ -11,7 +11,7 @@
 
 
   <!-- ------- -->
-  <ion-toolbar (@translateElement.done)="animationEnd($event,2)" [@translateElement] *ngIf="showItem.item2" class="toolbarColor2">
+  <ion-toolbar (@translateElement.done)="animationEnd($event,2)" [@translateElement] *ngIf="showItem['item2']" class="toolbarColor2">
     <ion-title class="ion-text-center">Seleccionado(s): {{productsToDelete?.length}}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="closeMultiDelete()">
@@ -47,7 +47,7 @@
           <ion-item lines="none">
             <ion-label>
               <h4 style="font-size: 14px;">Nombre:</h4>
-              <h3 style="font-size: 18px;">{{dataList.nameList}}</h3>
+              <h3 style="font-size: 18px;">{{dataList['nameList']}}</h3>
             </ion-label>
           </ion-item>
         </ion-col>
@@ -55,7 +55,7 @@
           <ion-item lines="none">
             <ion-label>
               <h4 style="font-size: 14px;">Fecha de creación:</h4>
-              <h3 style="font-size: 18px;">{{dataList.date | date :'MMM d, yyy'}}</h3>
+              <h3 style="font-size: 18px;">{{dataList['date'] | date :'MMM d, yyy'}}</h3>
             </ion-label>
           </ion-item>
         </ion-col>
