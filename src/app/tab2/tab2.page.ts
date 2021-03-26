@@ -1,7 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
-import { IonSlides, IonTabs } from '@ionic/angular';
+import { Component, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { IonSlides, IonTabs, IonSegmentButton } from '@ionic/angular';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { ButtonSaveClickService } from '../../services/button-save-click.service';
+import { AddProductFromTab1Service } from 'src/services/add-product-from-tab1.service';
+import { SegmentSlideAnimation } from 'src/animations/segmentsSlideAnimation';
 
 @Component({
   selector: 'app-tab2',
@@ -22,19 +24,25 @@ export class Tab2Page {
   categoryToAddProduct:Object={};
   @ViewChild('slides') slides:IonSlides;
   @ViewChild(IonTabs) ionTabs:IonTabs;
+  @ViewChildren(IonSegmentButton,{read:ElementRef}) segmentButtons:QueryList<ElementRef>;
   segment:number=0;
-  constructor(private componentsUtilsService:ComponentsUtilsService,private serviceClick:ButtonSaveClickService) {}
+  constructor(private componentsUtilsService:ComponentsUtilsService,
+    private serviceClick:ButtonSaveClickService,
+    private addProductFromTab1Service:AddProductFromTab1Service,
+    private segmentSlideAnimation:SegmentSlideAnimation) {}
 
-  ionViewDidEnter(){
-    if(history.state.data!=undefined){
-      var category = history.state.data.category;
-
-      delete category['countProducts'];
-      this.categoryToAddProduct = category;
-    }
+  async ionViewDidEnter(){
+    this.segmentSlideAnimation.config(this.segmentButtons,this.slides)
     this.componentsUtilsService.setTabStatusBar('tab2');
-    this.slides.slideTo(this.segment).then((res)=>{});
-    if (history.state.data != undefined){this.segment = history.state.data.segment}
+    await this.slides.slideTo(this.segment)
+
+    const observer = this.addProductFromTab1Service.data$.subscribe((res)=>{
+      if(res){
+        this.segment=res['segment'];
+      }
+    });
+    this.addProductFromTab1Service.clearProduct();
+    observer.unsubscribe();
   }
 
   async segmentChange(ev:any){
@@ -45,17 +53,6 @@ export class Tab2Page {
     this.segment = await this.slides.getActiveIndex();
   }
 
-  // get categoryToAddProduct(){
-  //   if(history.state.data==undefined){
-  //     console.log('entro')
-  //     return {}
-  //   }else{
-  //     var category = history.state.data.category;
-
-  //     delete category['countProducts'];
-  //     return category;
-  //   }
-  // }
 
   save(ev){
     this.serviceClick.click.next({tab:this.segment,event:ev})

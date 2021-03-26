@@ -23,7 +23,7 @@ const routes: Routes = [
     path: 'view-detail-list/:idList',
     canActivate:[DetailListGuard],
     loadChildren: () => import('./view-detail-list/view-detail-list.module').then( m => m.ViewDetailListPageModule)
-  }
+  },
 ];
 @NgModule({
   imports: [

@@ -3,7 +3,7 @@ import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonRefresher } from '@ionic/angular';
-import { convertDeepLinkEntryToJsObjectString } from '@ionic/app-scripts/dist/deep-linking/util';
+import { AddProductFromTab1Service } from 'src/services/add-product-from-tab1.service';
 import { ButtonSaveClickService } from '../../services/button-save-click.service';
 @Component({
   selector: 'app-add-product',
@@ -16,7 +16,7 @@ export class AddProductComponent implements OnInit {
   categories: any[] = [
     {nameCat:'Churros',id_categoria:1},{nameCat:'Bebidas',id_categoria:2}];
 
-  @Input() category: Object = {};
+  category: Object = {};
 
   products: Array<any> = [];
   // products = [{
@@ -41,7 +41,8 @@ export class AddProductComponent implements OnInit {
   constructor(private databaseService: DatabaseService,
     private componentsUtilsService: ComponentsUtilsService,
     private formBuilder: FormBuilder,
-    private buttonSaveClickService:ButtonSaveClickService) { }
+    private buttonSaveClickService:ButtonSaveClickService,
+    private addProductFromTab1Service:AddProductFromTab1Service) { }
 
   ngOnInit() {
     this.getCategories();
@@ -55,7 +56,14 @@ export class AddProductComponent implements OnInit {
           this.saveProduct();
         }
       }
-    })
+    });
+
+    this.addProductFromTab1Service.data$.subscribe((res)=>{
+      if(res){
+        delete res['category']['countProducts'];
+        this.category = res['category'];
+      }
+    });
   }
 
   get categoryEmpty() {

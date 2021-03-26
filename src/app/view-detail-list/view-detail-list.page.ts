@@ -51,8 +51,8 @@ export class ViewDetailListPage implements OnInit {
   }
 
    ionViewDidEnter(){
+    setTimeout(()=>{this.splashScreen.hide();},600)
     this.componentsUtilsService.setTabStatusBar('tab2');
-    this.splashScreen.hide();
   }
 
   close() {

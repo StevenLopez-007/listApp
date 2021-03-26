@@ -5,6 +5,7 @@ import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+declare let NavigationBar:any;
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -26,8 +27,11 @@ export class AppComponent {
         this.router.navigate(['/','view-detail-list',res['id']])
       })
 
-      this.statusBar.styleLightContent();
-      this.statusBar.backgroundColorByHexString('#040C3A');
+      // this.statusBar.styleLightContent();
+      // this.statusBar.backgroundColorByHexString('#040C3A');
+      if(this.platform.is('cordova')){
+        NavigationBar.backgroundColorByName('white',false);
+      }
         // this.Lottie.hide();
       // this.splashScreen.hide();
 

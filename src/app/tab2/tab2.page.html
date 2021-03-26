@@ -9,17 +9,21 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbarColor2">
-    <ion-segment [(ngModel)]="segment" (ionChange)="segmentChange($event)">
-      <ion-segment-button value="0">
+    <ion-segment  [(ngModel)]="segment" (ionChange)="segmentChange($event)">
+      <ion-segment-button id="tab0"  value="0">
+        <!-- <div id="tab0" style="width:100px;display: block;"><ion-label>Categoría</ion-label></div> -->
         <ion-label>Categoría</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="1">
+      <ion-segment-button id="tab1" value="1">
         <ion-label>Producto(s)</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="2">
+      <ion-segment-button id="tab2" value="2">
         <ion-label>Lista</ion-label>
       </ion-segment-button>
     </ion-segment>
+    <div style="width: 100%;">
+      <div id="slideBar" style="height: 5px; background-color: red;"></div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -29,7 +33,7 @@
      <app-add-category></app-add-category>
     </ion-slide>
     <ion-slide>
-     <app-add-product [category]="categoryToAddProduct"></app-add-product>
+     <app-add-product></app-add-product>
     </ion-slide>
     <ion-slide>
       <app-add-list></app-add-list>

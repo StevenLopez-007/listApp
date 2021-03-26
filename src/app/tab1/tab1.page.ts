@@ -8,6 +8,7 @@ import { CategoryCountProducts } from '../../model/categoryCountProduct';
 import { Router } from '@angular/router';
 import { LocalNotificationService } from '../../services/local-notification.service';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { AddProductFromTab1Service } from 'src/services/add-product-from-tab1.service';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -32,9 +33,10 @@ export class Tab1Page implements OnInit {
   constructor(private dbService: DatabaseService, private componentsUtilsService: ComponentsUtilsService,
     private swipeList: SwipeList, private router: Router,
     private localNotificationService: LocalNotificationService,
-    private splashScreen:SplashScreen) {
+    private splashScreen:SplashScreen,
+    private addProductFromTab1Service:AddProductFromTab1Service) {
     // this.lists = new Array(50).fill({nameList:'Coca-cola',date:new Date(),id_Lista:0})
-    // this.categories = [{ nameCat: 'Churros', id_categoria: 1, countProducts: 5 }, { nameCat: 'Bebidas', id_categoria: 2, countProducts: 0 }]
+    this.categories = [{ nameCat: 'Churros', id_categoria: 1, countProducts: 5 }, { nameCat: 'Bebidas', id_categoria: 2, countProducts: 0 }]
   }
 
   ngOnInit() {
@@ -48,11 +50,10 @@ export class Tab1Page implements OnInit {
 
   ionViewDidEnter() {
     this.swipeList.swipeAnimation(this.barSwipe);
-    this.splashScreen.hide();
-    
+    this.componentsUtilsService.setTabStatusBar('tab1');
+    setTimeout(()=>{this.splashScreen.hide();},600)
   }
   ionViewWillEnter(){
-    this.componentsUtilsService.setTabStatusBar('tab1');
   }
 
   async getLists() {
@@ -71,7 +72,8 @@ export class Tab1Page implements OnInit {
   }
 
   addProduct(category: Object) {
-    this.router.navigate(['tabs/tab2'], { state: { data: { category: category, segment: 1 } } })
+    this.addProductFromTab1Service.addProduct({category:category,segment:1});
+    this.router.navigate(['tabs/tab2'])
   }
   get listEmpty() {
     return this.lists.length <= 0;
