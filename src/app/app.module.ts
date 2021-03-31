@@ -21,10 +21,17 @@ import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {DatePicker} from '@ionic-native/date-picker/ngx';
 import { PermissionService } from '../services/permission.service';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import { SuperTabsModule } from '@ionic-super-tabs/angular';
+import { enterAnimation } from '../animations/nav-animation';
+import {enterAnimationAlert,leaveAnimationAlert} from '../animations/alertAnimation1'
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule,HammerModule,BrowserAnimationsModule ,IonicModule.forRoot(), AppRoutingModule,HttpClientModule],
+  imports: [BrowserModule,HammerModule,BrowserAnimationsModule ,IonicModule.forRoot({
+    // navAnimation:enterAnimation,
+    alertEnter:enterAnimationAlert,
+    alertLeave:leaveAnimationAlert
+  }),SuperTabsModule.forRoot(), AppRoutingModule,HttpClientModule],
   // exports:[FilterProductsPipe,FilterFoundProductsPipe],
   providers: [
     StatusBar,

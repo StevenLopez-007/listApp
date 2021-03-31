@@ -1,54 +1,164 @@
-ion-grid,ion-row,ion-col{
-    padding: 0;
-    margin: 0;
+$colors: #fe335b, #0580ff, #fea622, #9345ce;
+ion-grid,
+ion-row,
+ion-col {
+  padding: 0;
+  margin: 0;
 }
 
-.infoList{
-    background-color: #041266;
-    border-bottom-right-radius: 150px;
-    padding: 15px;
+.infoList {
+  background-color: #041266;
+  border-bottom-right-radius: 150px;
+  padding: 15px;
 }
 
-.infoList ion-item{
-    --background: transparent;
-    // padding-left: 15px;
+.infoList ion-item {
+  --background: transparent;
+  // padding-left: 15px;
 }
 
-#search{
-    border: none;
-    border-radius: 50px;
-    height: 50px;
-    width: 100%;
-    padding: 15px;
-    color: black;
-    font-family: NRegular;
+#search {
+  border: none;
+  border-radius: 50px;
+  height: 50px;
+  width: 100%;
+  padding: 15px;
+  color: black;
+  font-family: NRegular;
 }
 
-#search:focus + #icon{
-    transform: scale(0) rotate(360deg);
-}  
-
-#icon{
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    background-color: #0F24A0;
-    box-shadow: 0 0 0 10px #041266;
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.15s linear;
-}
-.products{
-    margin-top: 15px;
-}
-.products ion-item{
-    transition: 0.25s ease-in-out;
-    --background:#041266;
-    --border-radius:15px;
-    margin:20px 10px; 
+#search:focus + #icon {
+  transform: scale(0) rotate(360deg);
 }
 
+#icon {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #0f24a0;
+  box-shadow: 0 0 0 10px #041266;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.15s linear;
+}
+.products {
+  margin-top: 15px;
+}
+.products ion-item {
+  transition: 0.25s ease-in-out;
+  --background: #041266;
+  --border-radius: 15px;
+  margin: 20px 10px;
+}
+
+ion-item {
+  padding-bottom: 30px;
+  --padding-start: 50px;
+  --background: var(--ion-item-color2);
+}
+
+ion-item ion-icon {
+  font-size: 32px;
+}
+
+@for $i from 0 to 4 {
+  #icon#{$i} {
+    color: unquote(nth($colors, $i + 1));
+  }
+}
+
+//TimeLapse
+.containerTimeLapse {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  .containerLine {
+    width: 90%;
+    #line {
+      width: 100%;
+      height: 5px;
+      background-color: #fea622;
+    }
+    .circles {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    @for $i from 1 to 4 {
+      #circle#{$i} {
+        width: 20%;
+        // background-color: #2fdf75;
+        border-radius: 50%;
+        position: relative;
+        cursor: pointer;
+        transition: 0.5s;
+        box-shadow: 0 0 20px -3px rgba(0, 0, 0, 0.5);
+        ion-icon {
+          font-size: 32px;
+        }
+        span {
+          font-size: 14px;
+          position: absolute;
+          @if $i!=2 {
+            top: -40%;
+          }@else{
+            bottom: -50%;
+          }
+          z-index: 100;
+          text-align: center;
+          right: 0;
+          left: 0;
+          margin: auto;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-bottom: 15px;
+}
+#circle1::before {
+  content: "";
+  height: 5px;
+  width: 200%;
+  background-color: #fea622;
+  display: block;
+  position: relative;
+  top: 50%;
+  z-index: -1;
+}
+#circle2::before {
+  content: "";
+  height: 5px;
+  width: 200%;
+  background-color: #fea622;
+  display: block;
+  position: relative;
+  top: 50%;
+  z-index: -1;
+}
+#circle3::before {
+  content: "";
+  height: 5px;
+  background-color: #fea622;
+  display: block;
+  position: relative;
+  top: 50%;
+  z-index: -1;
+  left: -100%;
+}
+lottie-player{
+  transform: scale(2.1) translateY(-1.5px);
+}

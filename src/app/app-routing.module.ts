@@ -24,6 +24,11 @@ const routes: Routes = [
     canActivate:[DetailListGuard],
     loadChildren: () => import('./view-detail-list/view-detail-list.module').then( m => m.ViewDetailListPageModule)
   },
+  {
+    path: 'view-products-details',
+    loadChildren: () => import('./view-products-details/view-products-details.module').then( m => m.ViewProductsDetailsPageModule)
+  },
+  
 ];
 @NgModule({
   imports: [

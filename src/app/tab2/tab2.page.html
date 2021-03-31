@@ -1,42 +1,42 @@
-<ion-header [translucent]="true" class="ion-no-border">
-  <ion-toolbar class="toolbarColor2">
+<ion-header [translucent]="true" class="ion-no-border"  >
+  <ion-toolbar style="padding-top: 25px;" class="toolbarColor2">
     <ion-title class="ion-text-center">Agregar</ion-title>
-    <ion-buttons slot="end">
-      <ion-button style="--ripple:transparent;" (click)="save($event)">
-        <ion-icon style="font-size: 32px;" name="add-circle-outline"></ion-icon>
-          <!-- Guardar  -->
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar class="toolbarColor2">
-    <ion-segment  [(ngModel)]="segment" (ionChange)="segmentChange($event)">
-      <ion-segment-button id="tab0"  value="0">
-        <!-- <div id="tab0" style="width:100px;display: block;"><ion-label>Categoría</ion-label></div> -->
-        <ion-label>Categoría</ion-label>
-      </ion-segment-button>
-      <ion-segment-button id="tab1" value="1">
-        <ion-label>Producto(s)</ion-label>
-      </ion-segment-button>
-      <ion-segment-button id="tab2" value="2">
-        <ion-label>Lista</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-    <div style="width: 100%;">
-      <div id="slideBar" style="height: 5px; background-color: red;"></div>
-    </div>
-  </ion-toolbar>
+  <button (click)="save($event)" class="button">
+    <ion-icon style="font-size: 32px;" name="add-circle-outline"></ion-icon>
+  </button>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-slides #slides (ionSlideTransitionEnd)="slideChange(slides)" (ionSlidesDidLoad)="slideChange(slides)" pager="false" [options]="slidesOptions">
-    <ion-slide>
-     <app-add-category></app-add-category>
-    </ion-slide>
-    <ion-slide>
-     <app-add-product></app-add-product>
-    </ion-slide>
-    <ion-slide>
-      <app-add-list></app-add-list>
-    </ion-slide>
-  </ion-slides>
-</ion-content>
+<super-tabs [config]="configSuperTabs">
+  <super-tabs-toolbar slot="top">
+    <super-tab-button>
+      <!-- <ion-icon name="home"></ion-icon> -->
+      <ion-label>Categoría</ion-label>    
+    </super-tab-button>
+    <super-tab-button>
+      <!-- <ion-icon name="home"></ion-icon> -->
+      <ion-label>Producto(s)</ion-label>    
+    </super-tab-button>
+    <super-tab-button>
+      <!-- <ion-icon name="home"></ion-icon> -->
+      <ion-label>Lista</ion-label>    
+    </super-tab-button>
+  </super-tabs-toolbar>
+  <super-tabs-container (activeTabIndexChange)="slideChange($event)">
+    <super-tab>
+      <ion-content>
+        <app-add-category></app-add-category>
+      </ion-content>
+    </super-tab>
+    <super-tab>
+      <ion-content>
+        <app-add-product></app-add-product>
+      </ion-content>
+    </super-tab>
+    <super-tab>
+      <ion-content>
+        <app-add-list></app-add-list>
+      </ion-content>
+    </super-tab>
+  </super-tabs-container>
+</super-tabs>

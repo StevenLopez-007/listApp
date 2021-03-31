@@ -1,9 +1,9 @@
-import { Component, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { IonSlides, IonTabs, IonSegmentButton } from '@ionic/angular';
+import { Component, ViewChild,} from '@angular/core';
+import { IonSlides, IonTabs, } from '@ionic/angular';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { ButtonSaveClickService } from '../../services/button-save-click.service';
 import { AddProductFromTab1Service } from 'src/services/add-product-from-tab1.service';
-import { SegmentSlideAnimation } from 'src/animations/segmentsSlideAnimation';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-tab2',
@@ -11,30 +11,24 @@ import { SegmentSlideAnimation } from 'src/animations/segmentsSlideAnimation';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
-  slidesOptions = {
-    initialSlide: 0,
-    direction: 'horizontal',
-    speed: 300,
-    // effect: slide,
-    spaceBetween: 8,
-    slidesPerView: 1,
-    freeMode: false,
-    loop: false
-  };
+  
+  configSuperTabs ={
+    transitionDuration: 500,
+    shortSwipeDuration: 250,
+    dragThreshold:0
+  }
   categoryToAddProduct:Object={};
   @ViewChild('slides') slides:IonSlides;
   @ViewChild(IonTabs) ionTabs:IonTabs;
-  @ViewChildren(IonSegmentButton,{read:ElementRef}) segmentButtons:QueryList<ElementRef>;
   segment:number=0;
   constructor(private componentsUtilsService:ComponentsUtilsService,
     private serviceClick:ButtonSaveClickService,
     private addProductFromTab1Service:AddProductFromTab1Service,
-    private segmentSlideAnimation:SegmentSlideAnimation) {}
+    private Keyboard:Keyboard
+    ) {}
 
   async ionViewDidEnter(){
-    this.segmentSlideAnimation.config(this.segmentButtons,this.slides)
     this.componentsUtilsService.setTabStatusBar('tab2');
-    await this.slides.slideTo(this.segment)
 
     const observer = this.addProductFromTab1Service.data$.subscribe((res)=>{
       if(res){
@@ -45,12 +39,9 @@ export class Tab2Page {
     observer.unsubscribe();
   }
 
-  async segmentChange(ev:any){
-    await this.slides.slideTo(this.segment)
-  }
-
-  async slideChange(){
-    this.segment = await this.slides.getActiveIndex();
+  async slideChange(ev){
+    this.segment = ev['detail'];
+    this.Keyboard.hide();
   }
 
 

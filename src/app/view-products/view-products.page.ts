@@ -1,13 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IonSelect, ModalController, Platform } from '@ionic/angular';
-import { EnterAnimation1 } from '../../animations/enterAnimation';
-import { FadeInAndOut } from '../../animations/fadeInOutAnimation';
+
+import { checkItemsDelete } from '../../animations/fadeInOutAnimation';
 @Component({
   selector: 'app-view-products',
   templateUrl: './view-products.page.html',
   styleUrls: ['./view-products.page.scss'],
-  animations:[new FadeInAndOut().configAnimation()],
-  providers: [EnterAnimation1]
+  animations:[checkItemsDelete],
+
 })
 export class ViewProductsPage implements OnInit {
 
@@ -19,15 +19,14 @@ export class ViewProductsPage implements OnInit {
   @ViewChild('selectFilter') selectionFilter: IonSelect;
   optionsSelectAlert = {
     header: 'Filtrar por la categoria...',
-    enterAnimation: this.enterAnimation1.enterAnimation,
-    leaveAnimation: this.enterAnimation1.leaveAnimation
+
   }
 
   //Edit cantidad
   editProd:boolean=false;
   productToEdit:number=-1;
   constructor(private modalController: ModalController,
-    private enterAnimation1: EnterAnimation1,private platform:Platform) { 
+    private platform:Platform) { 
       this.platform.backButton.subscribeWithPriority(10,()=>{
         if(this.editProd){
           this.edit(-1);

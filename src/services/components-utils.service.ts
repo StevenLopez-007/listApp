@@ -1,10 +1,10 @@
+import { ViewProductsDetailsPage } from './../app/view-products-details/view-products-details.page';
 import { ViewProductsPage } from './../app/view-products/view-products.page';
 import { Injectable } from '@angular/core';
 import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { SelectCatPage } from '../app/select-cat/select-cat.page';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { SearchProductPage } from '../app/search-product/search-product.page';
-import { AnimationAlert1 } from '../animations/alertAnimation1';
 import { PermissionService } from './permission.service';
 import {DatePicker} from '@ionic-native/date-picker/ngx';
 @Injectable({
@@ -17,7 +17,6 @@ export class ComponentsUtilsService {
     private statusBar: StatusBar,
     private loadingController: LoadingController,
     private alertController: AlertController,
-    private animationAlert1:AnimationAlert1,
     private permissionService:PermissionService,
     private datePicker:DatePicker
     ) { }
@@ -28,7 +27,7 @@ export class ComponentsUtilsService {
     const toast = await this.toastController.create({
       duration: 3000,
       message: message,
-      cssClass: 'toastClass1'
+      cssClass: 'toastClass1',
     });
 
     await toast.present();
@@ -76,6 +75,19 @@ export class ComponentsUtilsService {
     return data.products;
   }
 
+  async presentModalViewProductsDetail(products:Array<any>){
+    const modal = await this.modalController.create({
+      component:ViewProductsDetailsPage,
+      componentProps:{products:products},
+
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    return data.products;
+  }
+
   //loading methods
   async presentLoading1() {
     const loading = await this.loadingController.create({
@@ -88,17 +100,16 @@ export class ComponentsUtilsService {
   }
 
   async dismissLoading1() {
-    await this.loadingController.dismiss();
+    return this.loadingController.dismiss();
   }
 
   //Alert methods
   async presentAlert1(title:string,message: string) {
-    let choice;
     const alert = await this.alertController.create({
       header: title,
       message: message,
-      enterAnimation:this.animationAlert1.enterAnimation,
-      leaveAnimation:this.animationAlert1.leaveAnimation,
+      // enterAnimation:this.animationAlert1.enterAnimation,
+      // leaveAnimation:this.animationAlert1.leaveAnimation,
       buttons: [
         {
           text: 'Cancelar',
@@ -127,8 +138,8 @@ export class ComponentsUtilsService {
     const alert = await this.alertController.create({
       header:'Info',
       message:message,
-      enterAnimation:this.animationAlert1.enterAnimation,
-      leaveAnimation:this.animationAlert1.leaveAnimation,
+      // enterAnimation:this.animationAlert1.enterAnimation,
+      // leaveAnimation:this.animationAlert1.leaveAnimation,
       buttons: [
         {
           text: 'Cancelar',
@@ -173,13 +184,15 @@ export class ComponentsUtilsService {
   setTabStatusBar(tab: any) {
     switch (tab) {
       case 'tab1': {
-        this.statusBar.backgroundColorByHexString('#040C3A');
+        this.statusBar.overlaysWebView(true);
+        this.statusBar.backgroundColorByHexString('');
         this.statusBar.styleLightContent();
         break;
       }
 
       case 'tab2': {
-        this.statusBar.backgroundColorByHexString('#041266');
+        this.statusBar.overlaysWebView(true);
+        this.statusBar.backgroundColorByHexString('');
         this.statusBar.styleLightContent();
         break;
       }

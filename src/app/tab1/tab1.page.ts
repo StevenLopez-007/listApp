@@ -36,7 +36,7 @@ export class Tab1Page implements OnInit {
     private splashScreen:SplashScreen,
     private addProductFromTab1Service:AddProductFromTab1Service) {
     // this.lists = new Array(50).fill({nameList:'Coca-cola',date:new Date(),id_Lista:0})
-    this.categories = [{ nameCat: 'Churros', id_categoria: 1, countProducts: 5 }, { nameCat: 'Bebidas', id_categoria: 2, countProducts: 0 }]
+    // this.categories = [{ nameCat: 'Churros', id_categoria: 1, countProducts: 5 }, { nameCat: 'Bebidas', id_categoria: 2, countProducts: 0 }]
   }
 
   ngOnInit() {

@@ -2,9 +2,10 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+
 import { Router } from '@angular/router';
-import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+
 declare let NavigationBar:any;
 @Component({
   selector: 'app-root',
@@ -14,26 +15,21 @@ declare let NavigationBar:any;
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private statusBar: StatusBar,
     private localNotifications:LocalNotifications,
     private router:Router,
-    private splashScreen:SplashScreen
+    private screenOrientation:ScreenOrientation
   ) {
     this.initializeApp();
   }
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       this.localNotifications.on('click').subscribe((res)=>{
         this.router.navigate(['/','view-detail-list',res['id']])
       })
-
-      // this.statusBar.styleLightContent();
-      // this.statusBar.backgroundColorByHexString('#040C3A');
       if(this.platform.is('cordova')){
         NavigationBar.backgroundColorByName('white',false);
+        await this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
       }
-        // this.Lottie.hide();
-      // this.splashScreen.hide();
 
     });
   }

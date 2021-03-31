@@ -3,14 +3,14 @@ import { IonCheckbox, ModalController, Platform } from '@ionic/angular';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { Product } from 'src/model/product';
-import { FadeInAndOut } from '../../animations/fadeInOutAnimation';
+import { FadeInAndOut, checkItemsDelete, translateElement } from '../../animations/fadeInOutAnimation';
 @Component({
   selector: 'app-search-product',
   templateUrl: './search-product.page.html',
   styleUrls: ['./search-product.page.scss'],
   animations: [
-    new FadeInAndOut().configAnimation(),
-    new FadeInAndOut().configAnimationTranslateEdit()]
+    checkItemsDelete,
+    translateElement]
 })
 export class SearchProductPage implements OnInit {
   @Input() productsAggregates: Array<Product[]> = [];
@@ -183,6 +183,7 @@ export class SearchProductPage implements OnInit {
       }
     }
   }
+  
 
   get allChecked() {
     if (this.checkBoxs.length > 0) {

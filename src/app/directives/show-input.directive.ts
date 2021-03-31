@@ -30,6 +30,6 @@ export class ShowInputDirective implements OnInit,OnChanges{
   ngOnInit(){
     this.keyboard.onKeyboardWillHide().subscribe((res)=>{
       this.closeEdit.emit();
-    })
+    });
   }
 }

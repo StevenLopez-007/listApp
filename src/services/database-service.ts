@@ -93,28 +93,28 @@ export class DatabaseService {
     return this.categoriesList.asObservable();
   }
 
-  loadCategoriesWithCountProduct(){
-    return this.storage.executeSql('select cat.nameCat,cat.id_categoria, Count(prod.categoria_id) as countProducts from categoria cat left join products prod on prod.categoria_id = cat.id_categoria group by cat.nameCat,cat.id_categoria',[])
-    .then((res)=>{
-      let items:CategoryCountProducts[]=[];
+  loadCategoriesWithCountProduct() {
+    return this.storage.executeSql('select cat.nameCat,cat.id_categoria, Count(prod.categoria_id) as countProducts from categoria cat left join products prod on prod.categoria_id = cat.id_categoria group by cat.nameCat,cat.id_categoria', [])
+      .then((res) => {
+        let items: CategoryCountProducts[] = [];
 
-      if(res.rows.length >0){
-        for (let index = 0; index < res.rows.length; index++) {
-          items.push({
-            id_categoria:res.rows.item(index).id_categoria,
-            nameCat:res.rows.item(index).nameCat,
-            countProducts:res.rows.item(index).countProducts,
-          });
+        if (res.rows.length > 0) {
+          for (let index = 0; index < res.rows.length; index++) {
+            items.push({
+              id_categoria: res.rows.item(index).id_categoria,
+              nameCat: res.rows.item(index).nameCat,
+              countProducts: res.rows.item(index).countProducts,
+            });
+          }
         }
-      }
 
-      this.categoriesCountProduct.next(items);
-    }).catch((e)=>{
-      this.componentsUtilsService.presentToast1('Ocurrió un error al cargar las categorías.')
-    })
+        this.categoriesCountProduct.next(items);
+      }).catch((e) => {
+        this.componentsUtilsService.presentToast1('Ocurrió un error al cargar las categorías.')
+      })
   }
 
-  getCategoriesWithCount():Observable<CategoryCountProducts[]>{
+  getCategoriesWithCount(): Observable<CategoryCountProducts[]> {
     return this.categoriesCountProduct.asObservable();
   }
 
@@ -181,17 +181,17 @@ export class DatabaseService {
 
   addList(name: string, date: string, products: Array<Product[]>) {
     var error = false;
-    return this.storage.executeSql('INSERT INTO list (nameList,date) VALUES (?,?)', [name.trim(), date.trim()])
+    return this.storage.executeSql('INSERT INTO list (nameList,date,state) VALUES (?,?,?)', [name.trim(), date.trim(), 1])
       .then((res) => {
         const idList = res.insertId;
         Promise.all(
           products.map(async (prod, index, array) => {
 
-            const data = [prod['id_product'], idList,prod['cantidad']]
+            const data = [prod['id_product'], idList, prod['cantidad']]
             await this.storage.executeSql('INSERT INTO detail_list (products_id,list_id,cantidad) VALUES (?,?,?)', data).catch(e => {
               error = true;
             });
-            
+
             if (index == array.length - 1) {
               if (error) {
                 await this.componentsUtilsService.presentToast1('Algunos productos no pudieron agregarse en la lista.');
@@ -200,7 +200,7 @@ export class DatabaseService {
                 await this.componentsUtilsService.presentToast1('Lista registrada con exito.');
               }
             }
-  
+
           })
         )
       }).catch(e => {
@@ -217,7 +217,8 @@ export class DatabaseService {
             items.push({
               id_list: res.rows.item(index).id_list,
               nameList: res.rows.item(index).nameList,
-              date: res.rows.item(index).date
+              date: res.rows.item(index).date,
+              state: res.rows.item(index).state
             });
           }
         }
@@ -229,9 +230,49 @@ export class DatabaseService {
     return this.lists.asObservable();
   }
 
+  async deleteList(idList: number) {
+    if (await this.componentsUtilsService.presentAlert1('Info', '¿Desea eliminar la lista?')) {
+      try {
+        await this.componentsUtilsService.presentLoading1();
+        await this.storage.executeSql('DELETE FROM list WHERE id_list = ?', [idList]);
+        await this.componentsUtilsService.dismissLoading1();
+        return true;
+      } catch (e) {
+        await this.componentsUtilsService.presentToast1('Ocurrió un error al eliminar la lista.')
+        await this.componentsUtilsService.dismissLoading1();
+        return false;
+      }
+    } else {
+      return false;
+    }
+
+  }
+
+  async updateList(idList: number, state: number) {
+    if (!(state > 0 && state <= 3)) {
+      return;
+    }
+    const stateName= state==1?'Pendiente':state==2?'Pedido':'Recibido';
+    if (await this.componentsUtilsService.presentAlert1('Info.', `¿Actualizar a ${stateName}?`)) {
+      try {
+        await this.componentsUtilsService.presentLoading1();
+        const res=await this.storage.executeSql('UPDATE list SET state = ? WHERE id_list =?', [state, idList]);
+        console.log(res)
+        if(res['rowsAffected']>0){
+          return true;
+        }else{
+          await this.componentsUtilsService.presentToast1('No se ha podido actualizar el estado de la lista.')
+        }
+      } catch (e) {
+        await this.componentsUtilsService.presentToast1('Ocurrió un error al actualizar la lista.')
+        await this.componentsUtilsService.dismissLoading1();
+      }
+    }
+  }
+
   // DetailList methods
   loadDetailLists(idList: string) {
-    return this.storage.executeSql('SELECT l.id_list,dl.id_detail_list,dl.products_id,l.nameList,l.date,prod.name, prod.precio,dl.cantidad from list l INNER JOIN detail_list dl ON l.id_list = dl.list_id INNER JOIN products prod on dl.products_id = prod.id_product WHERE l.id_List = ?', [idList])
+    return this.storage.executeSql('SELECT l.id_list,dl.id_detail_list,dl.products_id,l.nameList,l.date,l.state,prod.name, prod.precio,dl.cantidad from list l INNER JOIN detail_list dl ON l.id_list = dl.list_id INNER JOIN products prod on dl.products_id = prod.id_product WHERE l.id_List = ?', [idList])
       .then((res) => {
         let items: DetailList[] = [];
         if (res.rows.length > 0) {
@@ -244,15 +285,14 @@ export class DatabaseService {
               date: res.rows.item(i).date,
               name: res.rows.item(i).name,
               precio: res.rows.item(i).precio,
-              cantidad:res.rows.item(i).cantidad
+              cantidad: res.rows.item(i).cantidad,
+              state: res.rows.item(i).state
             });
           }
         }
         this.listDetailList.next(items);
       })
-      .catch(async (e) => {
-        await this.componentsUtilsService.presentToast1('Ocurrió un error al cargar las categorias.')
-      })
+
   }
 
   getDetailLists() {
@@ -262,14 +302,14 @@ export class DatabaseService {
   async deleteProductsFromDetailList(ids_detail_list: any[]) {
     await this.componentsUtilsService.presentLoading1();
     var error = false;
+    var productError=[];
     await Promise.all(
       ids_detail_list.map(async (item) => {
-
         await this.storage.executeSql('DELETE FROM detail_list WHERE id_detail_list = ?', [item])
           .catch(e => {
+            productError.push(item)
             error = true;
           });
-
       })
     );
 
@@ -277,7 +317,9 @@ export class DatabaseService {
     await this.componentsUtilsService.presentToast1(
       error ? 'Algunos productos no pudieron ser eliminados.' :
         'Productos eliminados.'
-    )
+    );
+
+    return productError;
   }
 
 }
