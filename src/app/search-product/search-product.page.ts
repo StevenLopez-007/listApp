@@ -3,7 +3,7 @@ import { IonCheckbox, ModalController, Platform } from '@ionic/angular';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { Product } from 'src/model/product';
-import { FadeInAndOut, checkItemsDelete, translateElement } from '../../animations/fadeInOutAnimation';
+import { checkItemsDelete, translateElement } from '../../animations/fadeInOutAnimation';
 @Component({
   selector: 'app-search-product',
   templateUrl: './search-product.page.html',

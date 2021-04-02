@@ -11,7 +11,7 @@ export class DetailListGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       let id = +next.url[1].path;
-      if(isNaN(id) || id<1){
+      if(isNaN(id) || id<1 ){
         this.router.navigate(['/'])
         return false
       }

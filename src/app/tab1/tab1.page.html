@@ -47,27 +47,46 @@
 
   <div #tuslistas class="tuslistas">
     <div #barSwipe class="barSwipe">
-      <ion-icon name="remove-sharp" style="color:black;"></ion-icon>
-      <ion-icon (click)="getLists();getCategories()" name="refresh-outline" style="transform: rotateY(180deg); color:black; font-size: 34px; position: absolute; right: 0; margin: 0 20px;" ></ion-icon>
+      <ion-icon (click)="openFilterLists()" name="options"></ion-icon>
+      <ion-icon name="remove-sharp" ></ion-icon>
+      <ion-icon (click)="getLists();getCategories()" name="refresh-outline" style="transform: rotateY(180deg); font-size: 34px;" ></ion-icon>
     </div>
     <ion-grid fixed *ngIf="!listEmpty;else emptyList">
       <ion-row>
-        <ion-col size="12">
+        <ion-col size="5">
           <h1 class="ion-padding-start">Tus listas</h1>
         </ion-col>
+        <ion-col style="display: flex;" class="ion-justify-content-end" size="7">
+          <div class="search">
+            <input (focus)="searchList=true" (blur)="searchList=false" [(ngModel)]="nameList" type="text" placeholder=" ">
+            <div>
+                <svg>
+                  <path d="M32.9418651,-20.6880772 C37.9418651,-20.6880772 40.9418651,-16.6880772 40.9418651,-12.6880772 C40.9418651,-8.68807717 37.9418651,-4.68807717 32.9418651,-4.68807717 C27.9418651,-4.68807717 24.9418651,-8.68807717 24.9418651,-12.6880772 C24.9418651,-16.6880772 27.9418651,-20.6880772 32.9418651,-20.6880772 L32.9418651,-29.870624 C32.9418651,-30.3676803 33.3448089,-30.770624 33.8418651,-30.770624 C34.08056,-30.770624 34.3094785,-30.6758029 34.4782612,-30.5070201 L141.371843,76.386562" transform="translate(83.156854, 22.171573) rotate(-225.000000) translate(-83.156854, -22.171573)"></path>
+                </svg>
+            </div>
+        </div>
+        </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col size="12">
-          <ion-list appAnimateItems className="exit-enter-styles" lines="none" style="background-color: white;">
-            <ion-item appLongPress (longPressed)="configNotication(list)" [routerLink]="['/','view-detail-list',list['id_list']]" style="margin: 15px 10px; transition: 0.25s ease-in-out;" *ngFor="let list of lists">
+    
+      <ion-row *ngFor="let list of lists | filterList:nameList:filters['state']:filters['orderDateBy'];let i = index" [attr.data-index]="i">
+        <ion-col size="2" style="display: flex;" class="ion-align-items-center ion-justify-content-center">
+          <div class="containerTimeLapse">
+            <div class="circle" [class]="(lists|filterList:nameList:filters['state']:filters['orderDateBy']).length-1==i?'no-after':''" [style.background]="list['state']==1?'var(--ion-color-danger-tint)':list['state']==2?'var(--ion-color-warning-tint)':'var(--ion-color-success-tint)'"></div>
+          </div>
+        </ion-col>
+        <ion-col size="10">
+          <ion-list lines="none" style="background-color: white;">
+            <ion-item appLongPress (longPressed)="configNotication(list)" [routerLink]="['/','view-detail-list',list['id_list']]" [state]="{index:i}" style="transition: 0.25s ease-in-out;">
               <ion-label>
                 <h2>{{list['nameList']}}</h2>
                 <h3>{{list['date'] | date:'MMM d, yyy'}}</h3>
+                <h3>Estado: {{list['state']==1?'Pendiente':list['state']==2?'Pedido':'Recibida'}}</h3>
               </ion-label>
             </ion-item>
           </ion-list>
         </ion-col>
       </ion-row>
+  
     </ion-grid>
 
     <ng-template #emptyList>
@@ -79,5 +98,5 @@
     </div>
     </ng-template>
   </div>
-
+  <ion-backdrop [@checkItemsDelete] style="opacity: 1;background-color: rgba(0,0,0,0.5);" *ngIf="searchList" [tappable]="false"></ion-backdrop>
 </ion-content>

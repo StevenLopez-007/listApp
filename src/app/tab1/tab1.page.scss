@@ -1,3 +1,4 @@
+$color: var(--ion-color-quaternary);
 .tuslistas{
     height: 45%;
     min-height: 45%;
@@ -8,8 +9,8 @@
     background-color: white;
     border-top-left-radius: 35px;
     border-top-right-radius: 35px;
-    padding-bottom: 56px;
-    z-index: 1;
+    padding-bottom: 120px;
+    z-index: 100;
 }
 .tuslistas ion-grid{
     height: 100%;
@@ -63,12 +64,117 @@ ion-grid{
 
 .barSwipe{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     height: 37px;
     position: relative;
+    padding: 2rem 2rem;
 }
 
 .barSwipe ion-icon{
     font-size: 38px;
+    color:#313131;
+}
+
+.containerTimeLapse{
+    width: 100%;
+    position: relative;
+    // background-color: black;
+    // margin: 28px 0;
+    // border-radius: 50%;
+    &::before{
+        content: "";
+        display: block;
+        padding-top: 100%;
+    }
+}
+
+.circle{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 3px solid #ffffffa6;
+    &::before{
+        content: "";
+        height: 260%;
+        width: 5px;
+        background-color: var(--ion-color-primary);
+        display: block;
+        top: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto;
+        z-index: -1;
+    }
+}
+
+.circle.no-after::before{
+    content: none;
+}
+
+.search {
+    display: table;
+    input {
+        background: none;
+        border: none;
+        outline: none;
+        width: 28px;
+        min-width: 0;
+        padding: 0;
+        z-index: 1;
+        position: relative;
+        line-height: 18px;
+        margin: 5px 0;
+        font-size: 18px;
+        -webkit-appearance: none;
+        font-family: 'NRegular';
+        transition: all .6s ease;
+        cursor: pointer;
+        color: $color;
+        & + div {
+            position: relative;
+            height: 28px;
+            width: 100%;
+            margin: -28px 0 0 0;
+            background-color: var(--ion-color-light);
+            border-radius: 25px;
+            svg {
+                display: block;
+                position: absolute;
+                height: 28px;
+                width: 160px;
+                right: 0;
+                top: 0;
+                fill: none;
+                stroke: $color;
+                stroke-width: 1.5px;
+                stroke-dashoffset: 212.908 + 59;
+                stroke-dasharray: 59 212.908;
+                transition: all .6s ease;
+            }
+        }
+        &:not(:placeholder-shown),
+        &:focus {
+            width: 160px;
+            padding: 0 4px;
+            cursor: text;
+            &+ div {
+                svg {
+                    stroke-dasharray: 150 212.908;
+                    stroke-dashoffset: 300;
+                }
+            }
+        }
+    }
+}
+
+::selection {
+    background: rgba(var(--ion-color-quaternary), .2);
+}
+::-moz-selection {
+    background: rgba(var(--ion-color-quaternary), .2);
 }

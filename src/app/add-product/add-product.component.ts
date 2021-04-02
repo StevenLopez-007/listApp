@@ -13,8 +13,7 @@ import { ButtonSaveClickService } from '../../services/button-save-click.service
 export class AddProductComponent implements OnInit {
   @ViewChild('refresher') refresher: IonRefresher;
   // categories: any[] = [];
-  categories: any[] = [
-    {nameCat:'Churros',id_categoria:1},{nameCat:'Bebidas',id_categoria:2}];
+  categories: any[] = [];
 
   category: Object = {};
 
@@ -64,6 +63,10 @@ export class AddProductComponent implements OnInit {
         this.category = res['category'];
       }
     });
+
+    this.databaseService.changeInCategories$.subscribe((sus)=>{
+      this.categories.push(sus)
+    })
   }
 
   get categoryEmpty() {

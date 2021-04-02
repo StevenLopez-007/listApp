@@ -1,0 +1,13 @@
+ion-list{
+    padding: 5px;
+}
+
+ion-list-header{
+    font-size: 22px;
+    border-bottom: 2px solid var(--ion-color-danger-tint);
+
+}
+
+ion-radio{
+    --color-checked:var(--ion-color-warning-tint);
+}

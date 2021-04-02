@@ -20,10 +20,17 @@ export class DatabaseService {
 
   categoriesList = new BehaviorSubject([]);
   categoriesCountProduct = new BehaviorSubject([]);
+
+  changeInCategories = new BehaviorSubject(null);
+  changeInCategories$ = this.changeInCategories.asObservable();
+
   productsSearchList = new BehaviorSubject([]);
 
   listDetailList = new BehaviorSubject([]);
   lists = new BehaviorSubject([]);
+
+  changeInList = new BehaviorSubject(null);
+  changeInList$ = this.changeInList.asObservable();
   constructor(private platform: Platform,
     private sqlite: SQLite,
     private httpClient: HttpClient,
@@ -118,15 +125,24 @@ export class DatabaseService {
     return this.categoriesCountProduct.asObservable();
   }
 
-  addCategory(name: string) {
+  async addCategory(name: string) {
     let data = [name.trim()];
-    return this.storage.executeSql('INSERT INTO categoria (nameCat) VALUES (?)', data)
-      .then(async (res) => {
+    try {
+      const res = await this.storage.executeSql('INSERT INTO categoria (nameCat) VALUES (?)', data)
+      if (res['rowsAffected'] > 0) {
         await this.componentsUtilsService.presentToast1('Categoría registrada con exito.');
-      })
-      .catch(async (e) => {
-        await this.componentsUtilsService.presentToast1('Ocurrió un error al registrar la categoría.')
-      })
+        const cat: CategoryCountProducts = { id_categoria: res['insertId'], nameCat: name.trim(), countProducts: 0 }
+        return cat
+      } else {
+        await this.componentsUtilsService.presentToast1('No se pudo registrar la categoría.')
+      }
+      return { id_categoria: 1, nameCat: 'Hola' };
+
+    } catch (e) {
+      await this.componentsUtilsService.presentToast1('Ocurrió un error al registrar la categoría.');
+      return null
+    }
+
   }
 
   //Product Methods
@@ -252,15 +268,15 @@ export class DatabaseService {
     if (!(state > 0 && state <= 3)) {
       return;
     }
-    const stateName= state==1?'Pendiente':state==2?'Pedido':'Recibido';
+    const stateName = state == 1 ? 'Pendiente' : state == 2 ? 'Pedido' : 'Recibido';
     if (await this.componentsUtilsService.presentAlert1('Info.', `¿Actualizar a ${stateName}?`)) {
       try {
         await this.componentsUtilsService.presentLoading1();
-        const res=await this.storage.executeSql('UPDATE list SET state = ? WHERE id_list =?', [state, idList]);
-        console.log(res)
-        if(res['rowsAffected']>0){
+        const res = await this.storage.executeSql('UPDATE list SET state = ? WHERE id_list =?', [state, idList]);
+
+        if (res['rowsAffected'] > 0) {
           return true;
-        }else{
+        } else {
           await this.componentsUtilsService.presentToast1('No se ha podido actualizar el estado de la lista.')
         }
       } catch (e) {
@@ -302,7 +318,7 @@ export class DatabaseService {
   async deleteProductsFromDetailList(ids_detail_list: any[]) {
     await this.componentsUtilsService.presentLoading1();
     var error = false;
-    var productError=[];
+    var productError = [];
     await Promise.all(
       ids_detail_list.map(async (item) => {
         await this.storage.executeSql('DELETE FROM detail_list WHERE id_detail_list = ?', [item])
@@ -320,6 +336,24 @@ export class DatabaseService {
     );
 
     return productError;
+  }
+
+  async updateCantidadDetailList(idDetailList: number, cantidad: number) {
+    await this.componentsUtilsService.presentLoading1();
+
+    try {
+      const res = await this.storage.executeSql('UPDATE detail_list set cantidad=? WHERE id_detail_list =?', [cantidad, idDetailList])
+      await this.componentsUtilsService.dismissLoading1();
+      if (res['rowsAffected'] > 0) {
+        return true;
+      } else {
+        await this.componentsUtilsService.presentToast1('No se ha podido actualizar el estado de la lista.')
+      }
+
+    } catch (e) {
+      await this.componentsUtilsService.dismissLoading1();
+      await this.componentsUtilsService.presentToast1('Ocurrió un error al actualizar la cantidad')
+    }
   }
 
 }

@@ -28,6 +28,10 @@ const routes: Routes = [
     path: 'view-products-details',
     loadChildren: () => import('./view-products-details/view-products-details.module').then( m => m.ViewProductsDetailsPageModule)
   },
+  {
+    path: 'filter-options-lists',
+    loadChildren: () => import('./filter-options-lists/filter-options-lists.module').then( m => m.FilterOptionsListsPageModule)
+  },
   
 ];
 @NgModule({

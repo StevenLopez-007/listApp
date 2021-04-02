@@ -1,4 +1,5 @@
-$colors: #fe335b, #0580ff, #fea622, #9345ce;
+
+$colors: '#fe335b', '#0580ff', '#fea622', '#9345ce';
 ion-grid,
 ion-row,
 ion-col {
@@ -79,11 +80,6 @@ ion-item ion-icon {
   margin-top: 50px;
   .containerLine {
     width: 90%;
-    #line {
-      width: 100%;
-      height: 5px;
-      background-color: #fea622;
-    }
     .circles {
       width: 100%;
       display: flex;

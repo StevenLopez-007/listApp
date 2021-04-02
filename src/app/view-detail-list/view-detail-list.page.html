@@ -1,7 +1,6 @@
-<ion-header [class]="multiDelete?'':'ion-no-border'" class="headerColorSameToolbar">
-
-  <ion-toolbar style="padding-top: 25px;" (@translateElement.done)="animationEnd($event,1)" [@translateElement]
-    *ngIf="showItem['item1']" class="toolbarColor2">
+<ion-header class="ion-no-border">
+  <ion-toolbar style="padding-top: 25px;"
+    class="toolbarColor2">
     <ion-title class="ion-text-center">Detalle de la lista</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="close()">
@@ -40,7 +39,7 @@
     </ion-col>
 
     <ion-col size="12">
-      <ion-item detail lines="none" (click)="viewProducts()">
+      <ion-item style="--detail-icon-color:var(--ion-color-danger-tint);--detail-icon-opacity:1;" detail lines="none" (click)="viewProducts()">
         <ion-icon id="icon2" slot="start" name="cart"></ion-icon>
         <ion-label>
           <h4>Total de productos</h4>
@@ -59,22 +58,19 @@
       </ion-item>
     </ion-col>
 
-    <ion-row>
+    <ion-row >
       <ion-col size="12">
         <h2 style="text-align: center;">Estado de la lista</h2>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <div class="containerTimeLapse">
+  <div id="containerTime" class="containerTimeLapse" style="opacity: 0; transition: 0.5s;">
     <div class="containerLine">
       <!-- <div id="line"></div> -->
       <div class="circles">
-        <div (click)="updateList(1)" id="circle1" [style.background]="dataList['state']>=1?'#2FDF75':'#FF4961'">
-          <!-- <div class="container">
-            <ion-icon [name]="dataList['state']>=1?'checkmark':'close'"></ion-icon>
-            <span>Pendiente</span>
-          </div> -->
+        <div (click)="dataList['state']!=1?updateList(1):null" id="circle1" [style.background]="dataList['state']>=1?'#2FDF75':'#FF4961'">
+
           <span>Pendiente</span>
           <lottie-player *ngIf="dataList['state']>=1;else lottie1No" id="lottie1" autoplay mode="normal"
             src="../../assets/animations/checkMark.json">
@@ -85,11 +81,8 @@
             </lottie-player>
           </ng-template>
         </div>
-        <div (click)="updateList(2)" id="circle2" [style.background]="dataList['state']>=2?'#2FDF75':'#FF4961'">
-          <!-- <div class="container">
-            <ion-icon [name]="dataList['state']>=2?'checkmark':'close'"></ion-icon>
-            <span>Pedido</span>
-          </div> -->
+        <div (click)="dataList['state']!=2?updateList(2):null" id="circle2" [style.background]="dataList['state']>=2?'#2FDF75':'#FF4961'">
+          
           <span>Pedido</span>
           <lottie-player *ngIf="dataList['state']>=2;else lottie2No" id="lottie1" autoplay mode="normal"
              src="../../assets/animations/checkMark.json">
@@ -100,11 +93,8 @@
             </lottie-player>
           </ng-template>
         </div>
-        <div (click)="updateList(3)" id="circle3" [style.background]="dataList['state']==3?'#2FDF75':'#FF4961'">
-          <!-- <div class="container">
-            <ion-icon [name]="dataList['state']==3?'checkmark':'close'"></ion-icon>
-            <span>Recibido</span>
-          </div> -->
+        <div (click)="dataList['state']!=3?updateList(3):null" id="circle3" [style.background]="dataList['state']==3?'#2FDF75':'#FF4961'">
+         
           <span>Recibido</span>
           <lottie-player *ngIf="dataList['state']==3;else lottie3No" id="lottie1" autoplay mode="normal"
              src="../../assets/animations/checkMark.json">

@@ -1,0 +1,26 @@
+<ion-list>
+  <ion-radio-group [(ngModel)]="filters['state']">
+    <ion-list-header>
+      <ion-label>Estado</ion-label>
+    </ion-list-header>
+    <ion-item lines="none" *ngFor="let state of states">
+      <ion-label>{{state.nameState}}</ion-label>
+      <ion-radio [value]="state.state"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+</ion-list>
+<ion-list>
+  <ion-radio-group [(ngModel)]="filters['orderDateBy']">
+    <ion-list-header>
+      <ion-label>Fecha de creación</ion-label>
+    </ion-list-header>
+    <ion-item lines="none">
+      <ion-label>Más reciente primero</ion-label>
+      <ion-radio value="asc"></ion-radio>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>Más antiguo primero</ion-label>
+      <ion-radio value="desc"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+</ion-list>

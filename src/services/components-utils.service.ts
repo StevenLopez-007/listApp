@@ -1,16 +1,18 @@
 import { ViewProductsDetailsPage } from './../app/view-products-details/view-products-details.page';
 import { ViewProductsPage } from './../app/view-products/view-products.page';
 import { Injectable } from '@angular/core';
-import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { SelectCatPage } from '../app/select-cat/select-cat.page';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { SearchProductPage } from '../app/search-product/search-product.page';
 import { PermissionService } from './permission.service';
 import {DatePicker} from '@ionic-native/date-picker/ngx';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class ComponentsUtilsService {
+  presentPopoverFilterOptionsData=new BehaviorSubject(null);
 
   constructor(private toastController: ToastController,
     private modalController: ModalController,
@@ -18,7 +20,8 @@ export class ComponentsUtilsService {
     private loadingController: LoadingController,
     private alertController: AlertController,
     private permissionService:PermissionService,
-    private datePicker:DatePicker
+    private datePicker:DatePicker,
+    private popoverController: PopoverController
     ) { }
 
 
@@ -103,6 +106,22 @@ export class ComponentsUtilsService {
     return this.loadingController.dismiss();
   }
 
+  //Popover Methos
+  async presentPopoverFilterOptions(component:any,props:any){
+    const popover = await this.popoverController.create({
+      component:component,
+      componentProps:{
+        filters:props
+      },
+      showBackdrop:true,
+      keyboardClose:true,
+      backdropDismiss:true
+    });
+
+    await popover.present();
+    await popover.onDidDismiss();
+    return this.presentPopoverFilterOptionsData.getValue();
+  }
   //Alert methods
   async presentAlert1(title:string,message: string) {
     const alert = await this.alertController.create({

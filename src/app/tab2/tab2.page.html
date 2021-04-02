@@ -7,17 +7,17 @@
   </button>
 </ion-header>
 
-<super-tabs [config]="configSuperTabs">
+<super-tabs [config]="configSuperTabs" [activeTabIndex]="segment" (tabChange)="tabChange($event)">
   <super-tabs-toolbar slot="top">
-    <super-tab-button>
+    <super-tab-button id="tabButton0">
       <!-- <ion-icon name="home"></ion-icon> -->
       <ion-label>Categoría</ion-label>    
     </super-tab-button>
-    <super-tab-button>
+    <super-tab-button id="tabButton1">
       <!-- <ion-icon name="home"></ion-icon> -->
       <ion-label>Producto(s)</ion-label>    
     </super-tab-button>
-    <super-tab-button>
+    <super-tab-button id="tabButton1">
       <!-- <ion-icon name="home"></ion-icon> -->
       <ion-label>Lista</ion-label>    
     </super-tab-button>
@@ -25,7 +25,7 @@
   <super-tabs-container (activeTabIndexChange)="slideChange($event)">
     <super-tab>
       <ion-content>
-        <app-add-category></app-add-category>
+        <app-add-category (saveCategory)=catSaved($event)></app-add-category>
       </ion-content>
     </super-tab>
     <super-tab>

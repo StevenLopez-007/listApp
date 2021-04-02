@@ -3,12 +3,12 @@
 }
 ion-icon{
     transition: 0.25s all;
+    color: #041266;
 }
 
 .bar{
     height: 5px;
     background-color: var(--ion-background-color);
     border-radius: 10px;
-    align-self: end;
     transition: 0.25s;
 }

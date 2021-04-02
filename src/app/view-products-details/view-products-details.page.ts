@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { IonCheckbox, ModalController } from '@ionic/angular';
+import { Component, Input, OnInit, QueryList, ViewChildren, ElementRef } from '@angular/core';
+import { IonCheckbox, ModalController, IonInput } from '@ionic/angular';
 import { checkItemsDelete, translateElement } from '../../animations/fadeInOutAnimation';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { DatabaseService } from '../../services/database-service';
@@ -50,12 +50,17 @@ export class ViewProductsDetailsPage implements OnInit {
     }
   }
 
-  setCantidad(ev: any) {
+  async setCantidad(input: IonInput) {
     if (this.editProd) {
-      var cantidad = ev.detail.value;
-      this.products[this.productToEdit]['cantidad'] = cantidad == '' ? 1 : parseInt(cantidad);
+      const cantidad = input.value == '' ? 1 : typeof input.value=='string'?parseInt(input.value):input.value;
+      if(await this.db.updateCantidadDetailList(this.products[this.productToEdit]['id_detail_list'],cantidad)){
+        await this.componentsUtilsService.presentToast1('Cantidad actualizada');
+        this.products[this.productToEdit]['cantidad'] = cantidad;
+        this.editProd=false;
+      }
     }
   }
+
 
   //Animation and Delete Configuration
 

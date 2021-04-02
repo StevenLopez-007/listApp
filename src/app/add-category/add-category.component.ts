@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import {FormGroup,FormBuilder,Validators} from '@angular/forms';
 import { DatabaseService } from '../../services/database-service';
 import { ComponentsUtilsService } from '../../services/components-utils.service';
 import { ButtonSaveClickService } from '../../services/button-save-click.service';
+
 @Component({
   selector: 'app-add-category',
   templateUrl: './add-category.component.html',
@@ -11,6 +12,7 @@ import { ButtonSaveClickService } from '../../services/button-save-click.service
 })
 export class AddCategoryComponent implements OnInit {
   categoryForm:FormGroup;
+  @Output() saveCategory:EventEmitter<any> = new EventEmitter();
   constructor(private formBuilder:FormBuilder,private databaseService:DatabaseService,
               private componentsUtilsService:ComponentsUtilsService,private saveClick:ButtonSaveClickService) { }
 
@@ -30,8 +32,12 @@ export class AddCategoryComponent implements OnInit {
 
   async saveCat(){
     if(this.categoryForm.valid){
-      await this.databaseService.addCategory(this.categoryForm.value.nameCat);
-      this.categoryForm.reset();
+      const catSaved = await this.databaseService.addCategory(this.categoryForm.value.nameCat);
+      if(catSaved){
+        this.categoryForm.reset();
+        this.saveCategory.emit(catSaved)
+      }
+      
     }
     else{
       await this.componentsUtilsService.presentToast1('Cumple con los requerimientos.')

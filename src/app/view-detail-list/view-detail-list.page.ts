@@ -11,25 +11,15 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
   selector: 'app-view-detail-list',
   templateUrl: './view-detail-list.page.html',
   styleUrls: ['./view-detail-list.page.scss'],
-  animations: [checkItemsDelete, translateElement],
+  animations: [checkItemsDelete],
 })
 export class ViewDetailListPage implements OnInit {
   @ViewChildren("ckeckBoxs") checkBoxs: QueryList<IonCheckbox>;
   // products;
   detailList: any[] = [];
-  dataList: Object = {};
+  dataList: Object = {nameList:'Cargando...',date:new Date()};
 
-  showItem: Object = {
-    item1: true,
-    item2: false
-  };
-  multiDelete: boolean = false;
-
-  productsToDelete: any[] = [];
-  deleteAll: boolean = false;
-
-  search: string = '';
-
+  indexList:number;
   constructor(private router: Router, private route: ActivatedRoute,
     private db: DatabaseService, private componentsUtilsService: ComponentsUtilsService,
     private cdr: ChangeDetectorRef, private splashScreen: SplashScreen
@@ -53,6 +43,7 @@ export class ViewDetailListPage implements OnInit {
   }
 
   ionViewDidEnter() {
+    this.configIndexList();
     setTimeout(() => { this.splashScreen.hide(); }, 600)
     this.componentsUtilsService.setTabStatusBar('tab2');
     this.configTimeLapse();
@@ -84,6 +75,7 @@ export class ViewDetailListPage implements OnInit {
               state:res[0]['state']
             }
             this.cdr.detectChanges();
+            document.getElementById('containerTime').style.opacity="1";
           });
           this.componentsUtilsService.dismissLoading1();
         } catch (e) {
@@ -100,8 +92,20 @@ export class ViewDetailListPage implements OnInit {
   async updateList(state:number){
     if(await this.db.updateList(this.dataList['idList'],state)){
       this.dataList['state']=state;
+      if(this.indexList>=0){
+        this.db.changeInList.next({index:this.indexList,state:state})
+      }
       await this.componentsUtilsService.dismissLoading1();
       await this.componentsUtilsService.presentToast1(`El estado de la lista ha sido actualizado`);
+    }
+  }
+
+  configIndexList(){
+    const index = history['state']['index']
+    if(index!=undefined){
+      this.indexList=index
+    }else{
+      this.indexList=-1;
     }
   }
 

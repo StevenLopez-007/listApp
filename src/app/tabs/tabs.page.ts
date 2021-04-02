@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonTabs } from '@ionic/angular';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
-import { ComponentsUtilsService } from '../../services/components-utils.service';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 @Component({
   selector: 'app-tabs',
@@ -15,8 +15,7 @@ export class TabsPage implements OnInit{
   widthTab:number;
   widthTabBar:number;
   dif:number;
-  flip:boolean=false;
-  constructor(private keyboard:Keyboard,private screenOrientation:ScreenOrientation,private componentsUtilsService:ComponentsUtilsService) {}
+  constructor(private keyboard:Keyboard,private screenOrientation:ScreenOrientation,private splashScreen:SplashScreen) {}
 
   ngOnInit(){
     this.configBar();
@@ -29,14 +28,17 @@ export class TabsPage implements OnInit{
   }
   
   ionViewDidEnter(){
-    this.keyboard.onKeyboardWillShow().subscribe(sus=>{
-      document.getElementById('barTab').style.display='none';
+    this.keyboard.onKeyboardWillShow().subscribe((sus)=>{
+      document.getElementById('containerBar').style.visibility="hidden"
     });
-    this.keyboard.onKeyboardDidHide().subscribe(sus=>{
-      document.getElementById('barTab').style.display='block';
-      this.barAnimation();
+    this.keyboard.onKeyboardWillHide().subscribe((sus)=>{
+      setTimeout(()=>{
+        document.getElementById('containerBar').style.visibility='inherit';
+        this.barAnimation();
+      },100)
     })
     this.barAnimation();
+    setTimeout(()=>{this.splashScreen.hide();},600);
   }
 
   configBar(){
